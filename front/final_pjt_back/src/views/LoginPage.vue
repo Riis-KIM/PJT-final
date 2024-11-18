@@ -26,13 +26,15 @@
       </div>
       <button type="submit" class="btn btn-primary w-100">로그인</button>
       <p class="text-center mt-3">
-  계정이 없으신가요? <router-link to="/register">회원가입</router-link>
-</p>
+        계정이 없으신가요? <router-link to="/register">회원가입</router-link>
+      </p>
     </form>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "LoginPage",
   data() {
@@ -43,13 +45,28 @@ export default {
   },
   methods: {
     async handleLogin() {
-      // 실제 API 요청을 여기에 추가
-      if (this.email === "test@example.com" && this.password === "password") {
-        alert("로그인 성공!");
-        localStorage.setItem("isLoggedIn", true);
-        this.$router.push("/"); // 로그인 후 홈으로 이동
-      } else {
-        alert("로그인 실패: 이메일 또는 비밀번호를 확인하세요.");
+      try {
+        const response = await axios({
+          method: 'post',
+          url: 'http://127.0.0.1:8000/api/v1/login/',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            username: this.email,
+            password: this.password,
+          }
+        });
+
+        if (response.status === 200) {
+          alert("로그인 성공!");
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("currentUser", this.email);
+          this.$router.push("/");
+        }
+      } catch (error) {
+        console.error("로그인 중 오류 발생:", error);
+        alert("로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
       }
     },
   },
