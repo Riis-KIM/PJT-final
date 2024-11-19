@@ -18,38 +18,38 @@
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th @click="sortTable('submissionDate')" style="cursor: pointer;">
-            공시 제출일수
-          </th>
           <th @click="sortTable('bank')" style="cursor: pointer;">
             금융회사명
           </th>
-          <th @click="sortTable('productName')" style="cursor: pointer;">
+          <th @click="sortTable('product_name')" style="cursor: pointer;">
             상품명
           </th>
-          <th @click="sortTable('sixMonthsRate')" style="cursor: pointer;">
+          <th @click="sortTable('saving_rate')" style="cursor: pointer;">
+            저축금리
+          </th>
+          <th @click="sortTable('six_months_rate')" style="cursor: pointer;">
             6개월
           </th>
-          <th @click="sortTable('twelveMonthsRate')" style="cursor: pointer;">
+          <th @click="sortTable('twelve_months_rate')" style="cursor: pointer;">
             12개월
           </th>
-          <th @click="sortTable('twentyFourMonthsRate')" style="cursor: pointer;">
+          <th @click="sortTable('twenty_four_months_rate')" style="cursor: pointer;">
             24개월
           </th>
-          <th @click="sortTable('thirtySixMonthsRate')" style="cursor: pointer;">
+          <th @click="sortTable('thirty_six_months_rate')" style="cursor: pointer;">
             36개월
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in filteredData" :key="index">
-          <td>{{ item.submissionDate }}</td>
           <td>{{ item.bank }}</td>
-          <td>{{ item.productName }}</td>
-          <td>{{ item.sixMonthsRate }}</td>
-          <td>{{ item.twelveMonthsRate }}</td>
-          <td>{{ item.twentyFourMonthsRate }}</td>
-          <td>{{ item.thirtySixMonthsRate }}</td>
+          <td>{{ item.product_name }}</td>
+          <td>{{ item.saving_rate }}%</td>
+          <td>{{ item.six_months_rate }}</td>
+          <td>{{ item.twelve_months_rate }}</td>
+          <td>{{ item.twenty_four_months_rate }}</td>
+          <td>{{ item.thirty_six_months_rate }}</td>
         </tr>
       </tbody>
     </table>
@@ -57,7 +57,8 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import axios from "axios";
+import { ref, computed, onMounted } from "vue";
 
 export default {
   name: "RatesTable",
@@ -65,37 +66,17 @@ export default {
     const searchQuery = ref(""); // 검색어
     const sortKey = ref(""); // 정렬 기준
     const sortOrder = ref(1); // 정렬 순서 (1: 오름차순, -1: 내림차순)
+    const tableData = ref([]); // API 데이터
 
-    // 예시 데이터
-    const tableData = ref([
-      {
-        submissionDate: "202302",
-        bank: "신한은행",
-        productName: "상품A",
-        sixMonthsRate: 3.5,
-        twelveMonthsRate: 3.8,
-        twentyFourMonthsRate: 4.0,
-        thirtySixMonthsRate: 4.2,
-      },
-      {
-        submissionDate: "202302",
-        bank: "우리은행",
-        productName: "상품B",
-        sixMonthsRate: 3.0,
-        twelveMonthsRate: 3.5,
-        twentyFourMonthsRate: 3.7,
-        thirtySixMonthsRate: 3.9,
-      },
-      {
-        submissionDate: "202302",
-        bank: "국민은행",
-        productName: "상품C",
-        sixMonthsRate: 3.6,
-        twelveMonthsRate: 3.9,
-        twentyFourMonthsRate: 4.1,
-        thirtySixMonthsRate: 4.3,
-      },
-    ]);
+    // API 호출
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/interest-rates/");
+        tableData.value = response.data;
+      } catch (error) {
+        console.error("데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
 
     // 필터링된 데이터
     const filteredData = computed(() => {
@@ -129,6 +110,11 @@ export default {
         sortOrder.value = 1; // 기본 오름차순
       }
     };
+
+    // API 데이터 가져오기
+    onMounted(() => {
+      fetchData();
+    });
 
     return {
       searchQuery,
