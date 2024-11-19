@@ -2,16 +2,36 @@
   <div class="container mt-5">
     <h1 class="fw-bold mb-4">🔍 금리 검색</h1>
 
-    <!-- 검색 기능 -->
-    <div class="mb-3">
-      <label for="bankFilter" class="form-label">은행 선택</label>
-      <input
-        id="bankFilter"
-        type="text"
-        class="form-control"
-        placeholder="은행명을 입력하세요"
-        v-model="searchQuery"
-      />
+    <!-- 검색 및 필터 기능 -->
+    <div class="d-flex justify-content-between mb-3">
+      <div class="w-50">
+        <label for="bankFilter" class="form-label">은행 선택</label>
+        <input
+          id="bankFilter"
+          type="text"
+          class="form-control"
+          placeholder="은행명을 입력하세요"
+          v-model="searchQuery"
+        />
+      </div>
+      <div class="d-flex align-items-end">
+        <div class="btn-group">
+          <button 
+            class="btn" 
+            :class="productType === 'deposit' ? 'btn-primary' : 'btn-outline-primary'"
+            @click="productType = 'deposit'"
+          >
+            예금
+          </button>
+          <button 
+            class="btn" 
+            :class="productType === 'saving' ? 'btn-primary' : 'btn-outline-primary'"
+            @click="productType = 'saving'"
+          >
+            적금
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- 테이블 -->
@@ -24,130 +44,115 @@
           <th @click="sortTable('fin_prdt_nm')" style="cursor: pointer;">
             상품명
           </th>
-          <th @click="sortTable('intr_rate')" style="cursor: pointer;">
-            저축금리
+          <th @click="sortTable('maxRate')" style="cursor: pointer;">
+            최고금리
           </th>
-          <th @click="sortTable('six_months')" style="cursor: pointer;">
-            6개월
-          </th>
-          <th @click="sortTable('twelve_months')" style="cursor: pointer;">
-            12개월
-          </th>
-          <th @click="sortTable('twenty_four_months')" style="cursor: pointer;">
-            24개월
-          </th>
-          <th @click="sortTable('thirty_six_months')" style="cursor: pointer;">
-            36개월
-          </th>
+          <th>6개월</th>
+          <th>12개월</th>
+          <th>24개월</th>
+          <th>36개월</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in filteredData" :key="index">
+        <tr v-for="item in filteredData" :key="item.fin_prdt_cd">
           <td>{{ item.kor_co_nm }}</td>
           <td>{{ item.fin_prdt_nm }}</td>
-          <td>{{ item.intr_rate }}%</td>
-          <td>{{ item.six_months || 'N/A' }}</td>
-          <td>{{ item.twelve_months || 'N/A' }}</td>
-          <td>{{ item.twenty_four_months || 'N/A' }}</td>
-          <td>{{ item.thirty_six_months || 'N/A' }}</td>
+          <td>{{ getMaxRate(item.options) }}%</td>
+          <td>{{ getTermRate(item.options, 6) }}</td>
+          <td>{{ getTermRate(item.options, 12) }}</td>
+          <td>{{ getTermRate(item.options, 24) }}</td>
+          <td>{{ getTermRate(item.options, 36) }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import { ref, computed, onMounted } from "vue";
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
 
-export default {
-  name: "RatesTable",
-  setup() {
-    const searchQuery = ref(""); // 검색어
-    const sortKey = ref(""); // 정렬 기준
-    const sortOrder = ref(1); // 정렬 순서 (1: 오름차순, -1: 내림차순)
-    const tableData = ref([]); // API 데이터
+const searchQuery = ref('')
+const sortKey = ref('')
+const sortOrder = ref(1)
+const tableData = ref([])
+const productType = ref('deposit') // 'deposit' 또는 'saving'
 
-    // API 호출
-    const fetchData = async () => {
-      try {
-        // Django API 호출
-        const depositResponse = await axios.get("http://127.0.0.1:8000/api/v1/deposits/");
-        const savingResponse = await axios.get("http://127.0.0.1:8000/api/v1/savings/");
+// 특정 기간의 금리를 반환하는 함수
+const getTermRate = (options, term) => {
+  const option = options?.find(opt => opt.save_trm === term)
+  if (!option || option.intr_rate === null) return '-'
+  return `${option.intr_rate}%`
+}
 
-        // 예금 및 적금 데이터를 결합
-        const depositData = depositResponse.data.map((item) => ({
-          kor_co_nm: item.kor_co_nm, // 금융회사명
-          fin_prdt_nm: item.fin_prdt_nm, // 상품명
-          intr_rate: item.intr_rate || "N/A", // 기본 금리
-          six_months: item.six_months_rate || null,
-          twelve_months: item.twelve_months_rate || null,
-          twenty_four_months: item.twenty_four_months_rate || null,
-          thirty_six_months: item.thirty_six_months_rate || null,
-        }));
+// 최고 금리를 반환하는 함수
+const getMaxRate = (options) => {
+  if (!options || options.length === 0) return '-'
+  const rates = options.map(opt => opt.intr_rate).filter(rate => rate !== null)
+  if (rates.length === 0) return '-'
+  return Math.max(...rates).toFixed(2)
+}
 
-        const savingData = savingResponse.data.map((item) => ({
-          kor_co_nm: item.kor_co_nm, // 금융회사명
-          fin_prdt_nm: item.fin_prdt_nm, // 상품명
-          intr_rate: item.intr_rate || "N/A", // 기본 금리
-          six_months: item.six_months_rate || null,
-          twelve_months: item.twelve_months_rate || null,
-          twenty_four_months: item.twenty_four_months_rate || null,
-          thirty_six_months: item.thirty_six_months_rate || null,
-        }));
+// API 호출
+const fetchData = async () => {
+  try {
+    const [depositResponse, savingResponse] = await Promise.all([
+      axios.get('http://127.0.0.1:8000/api/v1/deposits/'),
+      axios.get('http://127.0.0.1:8000/api/v1/savings/')
+    ])
+    
+    tableData.value = {
+      deposit: depositResponse.data,
+      saving: savingResponse.data
+    }
+  } catch (error) {
+    console.error('데이터를 가져오는 중 오류 발생:', error)
+  }
+}
 
-        // 데이터 결합
-        tableData.value = [...depositData, ...savingData];
-      } catch (error) {
-        console.error("데이터를 가져오는 중 오류 발생:", error);
-      }
-    };
+// 필터링된 데이터
+const filteredData = computed(() => {
+  let filtered = tableData.value[productType.value] || []
 
-    // 필터링된 데이터
-    const filteredData = computed(() => {
-      let filtered = tableData.value;
+  if (searchQuery.value) {
+    filtered = filtered.filter((item) =>
+      item.kor_co_nm.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
 
-      // 검색어 필터
-      if (searchQuery.value) {
-        filtered = filtered.filter((item) =>
-          item.kor_co_nm.toLowerCase().includes(searchQuery.value.toLowerCase())
-        );
-      }
-
-      // 정렬
-      if (sortKey.value) {
-        filtered = filtered.sort((a, b) => {
-          if (a[sortKey.value] < b[sortKey.value]) return -1 * sortOrder.value;
-          if (a[sortKey.value] > b[sortKey.value]) return 1 * sortOrder.value;
-          return 0;
-        });
+  if (sortKey.value) {
+    filtered = filtered.sort((a, b) => {
+      let aValue = a[sortKey.value]
+      let bValue = b[sortKey.value]
+      
+      // 최고금리로 정렬하는 경우
+      if (sortKey.value === 'maxRate') {
+        aValue = parseFloat(getMaxRate(a.options))
+        bValue = parseFloat(getMaxRate(b.options))
       }
 
-      return filtered;
-    });
+      if (aValue < bValue) return -1 * sortOrder.value
+      if (aValue > bValue) return 1 * sortOrder.value
+      return 0
+    })
+  }
 
-    // 정렬 함수
-    const sortTable = (key) => {
-      if (sortKey.value === key) {
-        sortOrder.value *= -1; // 동일한 열 클릭 시 정렬 순서 변경
-      } else {
-        sortKey.value = key;
-        sortOrder.value = 1; // 기본 오름차순
-      }
-    };
+  return filtered
+})
 
-    // API 데이터 가져오기
-    onMounted(() => {
-      fetchData();
-    });
+// 정렬 함수
+const sortTable = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value *= -1
+  } else {
+    sortKey.value = key
+    sortOrder.value = 1
+  }
+}
 
-    return {
-      searchQuery,
-      filteredData,
-      sortTable,
-    };
-  },
-};
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style scoped>
@@ -163,5 +168,9 @@ th {
 
 th:hover {
   background-color: #e9ecef;
+}
+
+.btn-group {
+  margin-bottom: 1rem;
 }
 </style>
