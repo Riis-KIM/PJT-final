@@ -56,6 +56,7 @@ REST_FRAMEWORK = {
     # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
     ],
     # permission
     'DEFAULT_PERMISSION_CLASSES': [
@@ -79,6 +80,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:5173',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'final.urls'
 
@@ -155,3 +158,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # 이메일 인증 비활성화
+ACCOUNT_EMAIL_REQUIRED = False       # 이메일 필드 필수 여부
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  # username으로 인증
+# dj-rest-auth 설정
+REST_AUTH = {
+    'USE_JWT': False,
+    'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
+}
+
+# django-allauth 설정
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
