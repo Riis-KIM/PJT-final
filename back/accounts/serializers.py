@@ -7,11 +7,14 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'name', 'email', 'age', 'money', 'finance_product')
+        fields = ('id', 'username', 'name', 'email', 'age', 'money', 'finance_product', 'password')  # 추가로 password 필드 명시
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop('password')  # 비밀번호 분리
+        user = User(**validated_data)
+        user.set_password(password)  # 비밀번호 해싱
+        user.save()
         return user
 
 class UserLoginSerializer(serializers.Serializer):
