@@ -3,13 +3,13 @@
     <h2 class="text-center">로그인</h2>
     <form @submit.prevent="handleLogin">
       <div class="mb-3">
-        <label for="email" class="form-label">이메일</label>
+        <label for="username" class="form-label">사용자 이름</label>
         <input
-          type="email"
+          type="text"
           class="form-control"
-          id="email"
-          v-model="email"
-          placeholder="이메일을 입력하세요"
+          id="username"
+          v-model="username"
+          placeholder="사용자 이름을 입력하세요"
           required
         />
       </div>
@@ -33,13 +33,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   name: "LoginPage",
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
     };
   },
@@ -47,26 +47,26 @@ export default {
     async handleLogin() {
       try {
         const response = await axios({
-          method: 'post',
-          url: 'http://127.0.0.1:8000/api/v1/login/',
+          method: "post",
+          url: "http://127.0.0.1:8000/api/v1/login/",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           data: {
-            username: this.email,
+            username: this.username,
             password: this.password,
-          }
+          },
         });
 
         if (response.status === 200) {
           alert("로그인 성공!");
           localStorage.setItem("isLoggedIn", true);
-          localStorage.setItem("currentUser", this.email);
+          localStorage.setItem("currentUser", this.username);
           this.$router.push("/");
         }
       } catch (error) {
         console.error("로그인 중 오류 발생:", error);
-        alert("로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.");
+        alert("로그인에 실패했습니다. 사용자 이름과 비밀번호를 확인하세요.");
       }
     },
   },
