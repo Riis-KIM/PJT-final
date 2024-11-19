@@ -1,11 +1,10 @@
-// stores/auth.js
+// store/auth.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
-  const API_URL = 'http://localhost:8000/api/v1'
   const router = useRouter()
   const token = ref(null)
   const user = ref(null)
@@ -18,30 +17,25 @@ export const useAuthStore = defineStore('auth', () => {
   const register = function (payload) {
     axios({
       method: 'post',
-      url: `${API_URL}/register/`,
+      url: '/accounts/signup/',
       data: {
         username: payload.username,
-        name: payload.name,
-        email: payload.email,
-        password: payload.password,
-        age: payload.age,
-        money: payload.money
+        password1: payload.password1,
+        password2: payload.password2,
+        email: payload.email
       }
     })
-      .then((res) => {
-        // console.log(res)
-        // // 회원가입 성공 시 자동 로그인
-        // login({
-        //   username: payload.username,
-        //   password: payload.password
-        // })
-        router.push({name:'login'})
+      .then(() => {
+        router.push({ name: 'login' })
       })
       .catch((err) => {
-        if (err.response?.status === 400) {
-          window.alert('이미 존재하는 회원입니다.')
+        console.error(err)
+        if (err.response?.data) {
+          // Django에서 보내는 에러 메시지 표시
+          const errorMessage = Object.values(err.response.data).flat().join('\n')
+          alert(errorMessage)
         } else {
-          console.log(err)
+          alert('회원가입 중 오류가 발생했습니다.')
         }
       })
   }
@@ -50,22 +44,20 @@ export const useAuthStore = defineStore('auth', () => {
   const login = function (payload) {
     axios({
       method: 'post',
-      url: `${API_URL}/login/`,
+      url: '/accounts/login/',
       data: {
         username: payload.username,
         password: payload.password
       }
     })
       .then((res) => {
-        token.value = res.data.token
-        user.value = res.data.user
-        localStorage.setItem('token', res.data.token)
-      })
-      .then(() => {
+        token.value = res.data.key
+        localStorage.setItem('token', res.data.key)
         router.push({ name: 'home' })
       })
       .catch((err) => {
-        window.alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.')
+        console.error(err)
+        alert('로그인에 실패했습니다.')
       })
   }
 
@@ -73,18 +65,14 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = function () {
     axios({
       method: 'post',
-      url: `${API_URL}/logout/`,
+      url: '/accounts/logout/',
       headers: {
-        Authorization: `Bearer ${token.value}`
+        Authorization: `Token ${token.value}`
       }
     })
       .then(() => {
         token.value = null
-        user.value = null
         localStorage.removeItem('token')
-        window.alert('로그아웃되었습니다.')
-      })
-      .then(() => {
         router.push({ name: 'login' })
       })
       .catch((err) => {
@@ -92,52 +80,22 @@ export const useAuthStore = defineStore('auth', () => {
       })
   }
 
-  // 사용자 프로필 조회
-  const getProfile = function () {
-    axios({
-      method: 'get',
-      url: `${API_URL}/profile/`,
-      headers: {
-        Authorization: `Bearer ${token.value}`
-      }
-    })
-      .then((res) => {
-        user.value = res.data
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-  }
-
-  // 프로필 업데이트
-  const updateProfile = function (payload) {
-    axios({
-      method: 'put',
-      url: `${API_URL}/profile/update/`,
-      data: payload,
-      headers: {
-        Authorization: `Bearer ${token.value}`
-      }
-    })
-      .then((res) => {
-        user.value = res.data
-        window.alert('프로필이 업데이트되었습니다.')
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+  // 토큰 초기화
+  const initializeToken = function () {
+    const storedToken = localStorage.getItem('token')
+    if (storedToken) {
+      token.value = storedToken
+    }
   }
 
   return {
-    API_URL,
-    user,
     token,
+    user,
     isAuthenticated,
     register,
     login,
     logout,
-    getProfile,
-    updateProfile
+    initializeToken,
   }
 }, {
   persist: {

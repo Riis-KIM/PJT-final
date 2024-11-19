@@ -5,14 +5,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import NavBar from './components/NavBar.vue';
-
-export default {
-  components: {
-    NavBar,
-  },
-};
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+authStore.initializeToken()
 </script>
 
 <style>

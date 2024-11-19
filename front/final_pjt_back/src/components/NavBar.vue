@@ -64,36 +64,26 @@
 </template>
 
 
-<script>
-export default {
-  name: "NavBar",
-  data() {
-    return {
-      isLoggedIn: localStorage.getItem("isLoggedIn") === "true", // 로그인 상태
-    };
-  },
-  methods: {
-    /**
-     * 로그인/로그아웃 처리
-     */
-    handleAuth() {
-      if (this.isLoggedIn) {
-        // 로그아웃 처리
-        localStorage.removeItem("isLoggedIn");
-        this.isLoggedIn = false; // 상태 직접 변경
-        alert("로그아웃 되었습니다!");
-        this.$router.push("/"); // 홈 페이지로 이동
-      } else {
-        // 로그인 페이지로 이동
-        this.$router.push("/login").then(() => {
-          // 예를 들어, 로그인 페이지에서 로그인 성공 후 이 상태를 업데이트
-          this.isLoggedIn = true; // 상태 직접 변경
-          localStorage.setItem("isLoggedIn", true); // 로그인 유지
-        });
-      }
-    },
-  },
-};
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+// computed 속성으로 로그인 상태 관리
+const isLoggedIn = computed(() => authStore.isAuthenticated)
+
+const handleAuth = () => {
+  if (isLoggedIn.value) {
+    // 로그아웃 처리
+    authStore.logout()
+  } else {
+    // 로그인 페이지로 이동만 수행
+    router.push({ name: 'login' })
+  }
+}
 </script>
 
 <style scoped>
