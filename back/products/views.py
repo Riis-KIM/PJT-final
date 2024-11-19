@@ -123,3 +123,48 @@ def save_products(request):
             continue
 
     return Response({'message': '데이터 저장이 완료되었습니다.'}, status=status.HTTP_201_CREATED)
+
+# 예금 리스트
+@api_view(['GET'])
+def deposit_list(request):
+    deposits = DepositProducts.objects.all()
+    serializer = DepositProductsSerializer(deposits, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# 적금 리스트
+@api_view(['GET'])
+def saving_list(request):
+    savings = SavingProducts.objects.all()
+    serializer = SavingProductsSerializer(savings, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# # 예금 상세 리스트
+# @api_view(['GET'])
+# def deposit_detail(request, fin_prdt_cd):
+#     deposit_info = DepositProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+#     deposit_info_serializer = DepositProductsSerializer(deposit_info)
+    
+#     deposit_options = DepositOptions.objects.filter(product=deposit_info)
+#     deposit_options_serializer = DepositOptionsSerializer(deposit_options, many=True)
+    
+#     serializer_data = {
+#         'deposit_detail': deposit_info_serializer.data,
+#         'deposit_options': deposit_options_serializer.data
+#     }
+#     return Response(serializer_data, status=status.HTTP_200_OK)
+
+# # 적금 상세 리스트
+# @api_view(['GET'])
+# def saving_detail(request, fin_prdt_cd):
+#     saving_info = SavingProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+#     saving_info_serializer = SavingProductsSerializer(saving_info)
+
+#     saving_detail_info = SavingOptions.objects.filter(fin_prdt_cd_id=saving_info.id)
+#     saving_detail_info_serializer = SavingOptionsSerializer(saving_detail_info, many=True)
+
+#     serializer_data = {
+#         'saving_detail': saving_info_serializer.data,
+#         'saving_detail_options': saving_detail_info_serializer.data
+#     }
+
+#     return Response(serializer_data, status=status.HTTP_200_OK)
