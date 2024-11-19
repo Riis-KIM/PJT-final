@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'articles',
     'accounts',
+    'products',
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -170,3 +171,6 @@ REST_AUTH = {
 
 # django-allauth 설정
 ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
+
+# 금융감독원 API 키 설정
+FIN_KEY = 'c623c1eba8c43059b3039604c3c0c5ee'
