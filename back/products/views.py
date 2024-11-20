@@ -2,8 +2,10 @@
 import requests
 from django.conf import settings
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
 from .models import DepositProducts, DepositOptions, SavingProducts, SavingOptions
 from .serializers import (
     DepositProductsSerializer, 
@@ -138,33 +140,34 @@ def saving_list(request):
     serializer = SavingProductsSerializer(savings, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-# # 예금 상세 리스트
-# @api_view(['GET'])
-# def deposit_detail(request, fin_prdt_cd):
-#     deposit_info = DepositProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
-#     deposit_info_serializer = DepositProductsSerializer(deposit_info)
+# 예금 구매버튼
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def deposit_join(request, fin_prdt_cd):
+    product = get_object_or_404(DepositProducts, fin_prdt_cd=fin_prdt_cd)
+    user = request.user
     
-#     deposit_options = DepositOptions.objects.filter(product=deposit_info)
-#     deposit_options_serializer = DepositOptionsSerializer(deposit_options, many=True)
+    if user.joined_deposits.filter(fin_prdt_cd=fin_prdt_cd).exists():
+        user.joined_deposits.remove(product)
+        joined = False
+    else:
+        user.joined_deposits.add(product)
+        joined = True
+        
+    return Response({'joined': joined})
+
+# 적금 구매버튼
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def saving_join(request, fin_prdt_cd):
+    product = get_object_or_404(SavingProducts, fin_prdt_cd=fin_prdt_cd)
+    user = request.user
     
-#     serializer_data = {
-#         'deposit_detail': deposit_info_serializer.data,
-#         'deposit_options': deposit_options_serializer.data
-#     }
-#     return Response(serializer_data, status=status.HTTP_200_OK)
-
-# # 적금 상세 리스트
-# @api_view(['GET'])
-# def saving_detail(request, fin_prdt_cd):
-#     saving_info = SavingProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
-#     saving_info_serializer = SavingProductsSerializer(saving_info)
-
-#     saving_detail_info = SavingOptions.objects.filter(fin_prdt_cd_id=saving_info.id)
-#     saving_detail_info_serializer = SavingOptionsSerializer(saving_detail_info, many=True)
-
-#     serializer_data = {
-#         'saving_detail': saving_info_serializer.data,
-#         'saving_detail_options': saving_detail_info_serializer.data
-#     }
-
-#     return Response(serializer_data, status=status.HTTP_200_OK)
+    if user.joined_savings.filter(fin_prdt_cd=fin_prdt_cd).exists():
+        user.joined_savings.remove(product)
+        joined = joined
+    else:
+        user.joined_savings.add(product)
+        joined = joined
+        
+    return Response({'joined': joined})
