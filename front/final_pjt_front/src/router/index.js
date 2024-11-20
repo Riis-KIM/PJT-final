@@ -6,6 +6,7 @@ import MapView from '../views/MapView.vue';
 import CommunityView from '../views/CommunityView.vue';
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
+import ProfileView from '@/views/ProfileView.vue';
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/register",
     component: RegisterPage, 
     name: "register" 
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: ProfileView,
   },
 ];
 

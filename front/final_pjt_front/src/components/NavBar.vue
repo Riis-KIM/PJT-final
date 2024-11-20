@@ -39,8 +39,9 @@
 
           <!-- 오른쪽 아이콘 -->
           <div class="d-flex align-items-center">
-            <router-link to="/search" class="me-3 text-dark">
-              <i class="bi bi-search fs-5"></i>
+            <!-- 내 정보 페이지로 이동 -->
+            <router-link to="/profile" class="me-3 text-dark">
+              <i class="bi bi-person fs-5"></i> <!-- 사람 모양 아이콘으로 교체 -->
             </router-link>
             <router-link to="/favorites" class="me-3 text-dark">
               <i class="bi bi-heart fs-5"></i>
@@ -63,34 +64,33 @@
   </div>
 </template>
 
-
 <script setup>
-import { computed } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
+import { computed } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 // computed 속성으로 로그인 상태 관리
-const isLoggedIn = computed(() => authStore.isAuthenticated)
+const isLoggedIn = computed(() => authStore.isAuthenticated);
 
 const handleAuth = () => {
   if (isLoggedIn.value) {
     // 로그아웃 처리
-    authStore.logout()
+    authStore.logout();
   } else {
     // 로그인 페이지로 이동만 수행
-    router.push({ name: 'login' })
+    router.push({ name: "login" });
   }
-}
+};
 </script>
 
 <style scoped>
 /* 로고 이미지 스타일 */
 .logo-image {
   height: 50px; /* 로고 높이 조정 */
-  width: auto;  /* 가로 비율 유지 */
+  width: auto; /* 가로 비율 유지 */
 }
 
 /* 반응형 크기 조정 */
