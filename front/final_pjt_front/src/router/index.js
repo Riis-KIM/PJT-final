@@ -66,7 +66,7 @@ const routes = [
       product: route.query.data ? JSON.parse(route.query.data) : null,
     }),
   },
-  
+  {
     path: '/community/create',
     name: 'articleCreate',
     component: ArticleForm
