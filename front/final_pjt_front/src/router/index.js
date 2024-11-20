@@ -7,6 +7,7 @@ import CommunityView from '../views/community/CommunityView.vue';
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ProfileView from '@/views/ProfileView.vue';
+import DetailProduct from '@/views/DetailProdoct.vue';
 import ArticleForm from '@/views/community/ArticleForm.vue';
 import ArticleDetail from '@/views/community/ArticleDetail.vue';
 
@@ -52,6 +53,20 @@ const routes = [
     component: ProfileView,
   },
   {
+    path: "/details/:id",
+    name: "details",
+    component: DetailProduct,
+    props: true,
+  },
+  {
+    path: "/product/:id",
+    name: "DetailProduct",
+    component: DetailProduct,
+    props: (route) => ({
+      product: route.query.data ? JSON.parse(route.query.data) : null,
+    }),
+  },
+  
     path: '/community/create',
     name: 'articleCreate',
     component: ArticleForm
