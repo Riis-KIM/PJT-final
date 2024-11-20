@@ -27,27 +27,25 @@ export const useArticleStore = defineStore('articles', () => {
       })
   }
 
-  // 게시글 상세 조회
-  const getArticle = function(articleId) {
-    axios({
-      method: 'get',
-      url: `/articles/${articleId}/`,
-      headers: {
-        Authorization: `Token ${authStore.token}`
-      }
+// stores/articles.js
+const getArticle = function(articleId) {
+  axios({
+    method: 'get',
+    url: `/articles/${articleId}/`,
+    headers: {
+      Authorization: `Token ${authStore.token}`
+    }
+  })
+    .then((res) => {
+      article.value = res.data
     })
-      .then((res) => {
-        article.value = res.data
-      })
-      .catch((err) => {
-        console.error(err)
-        alert('게시글을 불러오는데 실패했습니다.')
-      })
-  }
-
-  // stores/articles.js
-const createArticle = function(articleData) {
-  return new Promise((resolve, reject) => {
+    .catch((err) => {
+      console.error(err)
+      alert('게시글을 불러오는데 실패했습니다.')
+    })
+}
+  // 게시글 생성
+  const createArticle = function(articleData) {
     axios({
       method: 'post',
       url: '/articles/',
@@ -59,18 +57,15 @@ const createArticle = function(articleData) {
       .then((res) => {
         articles.value.push(res.data)
         alert('게시글이 작성되었습니다.')
-        resolve(res.data)
       })
       .catch((err) => {
         console.error(err)
         alert('게시글 작성에 실패했습니다.')
-        reject(err)
       })
-  })
-}
-
-const updateArticle = function(articleId, articleData) {
-  return new Promise((resolve, reject) => {
+  }
+  
+    // 게시글 수정
+  const updateArticle = function(articleId, articleData) {
     axios({
       method: 'put',
       url: `/articles/${articleId}/`,
@@ -82,15 +77,12 @@ const updateArticle = function(articleId, articleData) {
       .then((res) => {
         article.value = res.data
         alert('게시글이 수정되었습니다.')
-        resolve(res.data)
       })
       .catch((err) => {
         console.error(err)
         alert('게시글 수정에 실패했습니다.')
-        reject(err)
       })
-  })
-}
+  }
 
   // 게시글 삭제
   const deleteArticle = function(articleId) {

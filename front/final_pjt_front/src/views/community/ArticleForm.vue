@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useArticleStore } from '@/stores/articles'
 
@@ -79,12 +79,16 @@ const articleData = ref({
 onMounted(() => {
   if (isEditing.value) {
     articleStore.getArticle(route.params.id)
-      .then(() => {
-        articleData.value = {
-          title: articleStore.article.title,
-          content: articleStore.article.content
-        }
-      })
+  }
+})
+
+// watch를 추가하여 article 데이터 변경 감지
+watch(() => articleStore.article, (newArticle) => {
+  if (newArticle && isEditing.value) {
+    articleData.value = {
+      title: newArticle.title,
+      content: newArticle.content
+    }
   }
 })
 
@@ -97,17 +101,13 @@ const submitArticle = () => {
 
   if (isEditing.value) {
     articleStore.updateArticle(route.params.id, articleData.value)
-      .then(() => {
-        router.push({
-          name: 'articleDetail',
-          params: { id: route.params.id }
-        })
-      })
+    router.push({
+      name: 'articleDetail',
+      params: { id: route.params.id }
+    })
   } else {
     articleStore.createArticle(articleData.value)
-      .then(() => {
-        router.push({ name: 'community' })
-      })
+    router.push({ name: 'community' })
   }
 }
 
