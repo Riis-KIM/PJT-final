@@ -168,8 +168,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'  # username으로 인증
 REST_AUTH = {
     'USE_JWT': False,
     'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
-    'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserDetailSerializer',
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer','PATCH_METHOD': True,
 }
 
 # django-allauth 설정

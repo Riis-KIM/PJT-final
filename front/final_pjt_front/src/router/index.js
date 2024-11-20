@@ -3,12 +3,13 @@ import HomeView from '../views/HomeView.vue';
 import RatesView from '../views/RatesView.vue';
 import ExchangeView from '../views/ExchangeView.vue';
 import MapView from '../views/MapView.vue';
-import CommunityView from '../views/CommunityView.vue';
+import CommunityView from '../views/community/CommunityView.vue';
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ProfileView from '@/views/ProfileView.vue';
 import DetailProduct from '@/views/DetailProdoct.vue';
-
+import ArticleForm from '@/views/community/ArticleForm.vue';
+import ArticleDetail from '@/views/community/ArticleDetail.vue';
 
 const routes = [
   {
@@ -66,6 +67,20 @@ const routes = [
     }),
   },
   
+    path: '/community/create',
+    name: 'articleCreate',
+    component: ArticleForm
+  },
+  {
+    path: '/community/:id',
+    name: 'articleDetail',
+    component: ArticleDetail
+  },
+  {
+    path: '/community/:id/edit',
+    name: 'articleEdit',
+    component: ArticleForm
+  },
 ];
 
 const router = createRouter({

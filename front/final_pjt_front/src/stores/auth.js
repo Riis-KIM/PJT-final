@@ -53,6 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
       .then((res) => {
         token.value = res.data.key
         localStorage.setItem('token', res.data.key)
+        fetchUserInfo()
         router.push({ name: 'home' })
       })
       .catch((err) => {
@@ -80,6 +81,44 @@ export const useAuthStore = defineStore('auth', () => {
       })
   }
 
+// 사용자 정보 조회
+const fetchUserInfo = function () {
+  axios({
+    method: 'get',
+    url: '/accounts/user/',
+    headers: {
+      Authorization: `Token ${token.value}`
+    }
+  })
+    .then((response) => {
+      user.value = response.data
+    })
+    .catch((err) => {
+      console.error(err)
+      alert('사용자 정보를 불러오는데 실패했습니다.')
+    })
+}
+
+// 사용자 정보 수정
+const updateUserInfo = function (userData) {
+  axios({
+    method: 'patch',
+    url: '/accounts/user/',
+    headers: {
+      Authorization: `Token ${token.value}`
+    },
+    data: userData
+  })
+    .then((response) => {
+      user.value = response.data
+      alert('프로필이 성공적으로 업데이트되었습니다.')
+    })
+    .catch((err) => {
+      console.error(err)
+      alert('프로필 업데이트에 실패했습니다.')
+    })
+}
+
   // 토큰 초기화
   const initializeToken = function () {
     const storedToken = localStorage.getItem('token')
@@ -96,6 +135,8 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     initializeToken,
+    fetchUserInfo,
+    updateUserInfo
   }
 }, {
   persist: {
