@@ -7,6 +7,8 @@ import CommunityView from '../views/CommunityView.vue';
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ProfileView from '@/views/ProfileView.vue';
+import DetailProduct from '@/views/DetailProdoct.vue';
+
 
 const routes = [
   {
@@ -49,6 +51,21 @@ const routes = [
     name: "profile",
     component: ProfileView,
   },
+  {
+    path: "/details/:id",
+    name: "details",
+    component: DetailProduct,
+    props: true,
+  },
+  {
+    path: "/product/:id",
+    name: "DetailProduct",
+    component: DetailProduct,
+    props: (route) => ({
+      product: route.query.data ? JSON.parse(route.query.data) : null,
+    }),
+  },
+  
 ];
 
 const router = createRouter({
