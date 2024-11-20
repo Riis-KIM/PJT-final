@@ -16,7 +16,7 @@ def exchange_info(request):
         'searchdate': '20241119',
         'data': 'AP01',
     }
-    exchange_response = requests.get(EXCHANGE_URL, params)
+    exchange_response = requests.get(EXCHANGE_URL, params, verify=False)
     
     if exchange_response.status_code == 200:
         return Response(exchange_response.json(), status=status.HTTP_200_OK)
