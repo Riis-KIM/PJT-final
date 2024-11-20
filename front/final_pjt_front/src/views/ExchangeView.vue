@@ -1,101 +1,151 @@
 <template>
   <div class="container mt-5">
     <h1 class="fw-bold mb-4">💱 환율 계산기</h1>
+    <div class="card p-4 shadow-sm">
+      <!-- 통화 선택 및 금액 입력 -->
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label for="fromCurrency" class="form-label">보낼 통화</label>
+          <select 
+            id="fromCurrency" 
+            class="form-select" 
+            v-model="fromCurrency"
+          >
+            <option v-for="currency in currencies" :key="currency.cur_unit" :value="currency">
+              {{ currency.cur_unit }} - {{ currency.cur_nm }}
+            </option>
+          </select>
+        </div>
 
-    <!-- 통화 선택 및 금액 입력 -->
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label for="fromCurrency" class="form-label">보낼 통화</label>
-        <select id="fromCurrency" class="form-select" v-model="fromCurrency">
-          <option v-for="(rate, currency) in rates" :key="currency" :value="currency">
-            {{ currency }}
-          </option>
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label for="toCurrency" class="form-label">받을 통화</label>
-        <select id="toCurrency" class="form-select" v-model="toCurrency">
-          <option v-for="(rate, currency) in rates" :key="currency" :value="currency">
-            {{ currency }}
-          </option>
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label for="amount" class="form-label">보낼 금액</label>
-        <input
-          id="amount"
-          type="number"
-          class="form-control"
-          v-model.number="amount"
-          placeholder="금액을 입력하세요"
-        />
-      </div>
-    </div>
+        <div class="col-md-4">
+          <label for="toCurrency" class="form-label">받을 통화</label>
+          <select 
+            id="toCurrency" 
+            class="form-select" 
+            v-model="toCurrency"
+          >
+            <option v-for="currency in currencies" :key="currency.cur_unit" :value="currency">
+              {{ currency.cur_unit }} - {{ currency.cur_nm }}
+            </option>
+          </select>
+        </div>
 
-    <!-- 결과 표시 -->
-    <div class="mt-3">
-      <button @click="calculateExchange" class="btn btn-primary">계산하기</button>
-      <p class="mt-3" v-if="result !== null">
-        {{ amount }} {{ fromCurrency }} → {{ result }} {{ toCurrency }}
-      </p>
+        <div class="col-md-4">
+          <label for="amount" class="form-label">보낼 금액</label>
+          <input
+            id="amount"
+            type="number"
+            class="form-control"
+            v-model.number="amount"
+            placeholder="금액을 입력하세요"
+          />
+        </div>
+      </div>
+
+      <!-- 결과 표시 -->
+      <div v-if="result" class="mt-4 text-center">
+        <div class="alert alert-success">
+          <h4 class="mb-0">
+            {{ formatNumber(amount) }} {{ fromCurrency?.cur_unit }} = 
+            {{ formatNumber(result) }} {{ toCurrency?.cur_unit }}
+          </h4>
+          <small class="text-muted">
+            기준 환율: {{ fromCurrency?.cur_unit }} = {{ fromCurrency?.kftc_bkpr }}원
+          </small>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+import axios from 'axios'
 
-export default {
-  name: "ExchangeCalculator",
-  data() {
-    return {
-      rates: {}, // 환율 데이터
-      fromCurrency: "USD", // 기본 통화
-      toCurrency: "KRW", // 변환할 통화
-      amount: 0, // 변환 금액
-      result: null, // 계산 결과
-    };
-  },
-  methods: {
-    // 환율 데이터 가져오기
-    async fetchRates() {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/exchange-rates/");
-        this.rates = response.data.rates; // API에서 받은 환율 데이터
-      } catch (error) {
-        console.error("환율 데이터를 가져오는 중 오류 발생:", error);
-      }
-    },
-    // 환율 계산
-    calculateExchange() {
-      if (this.amount <= 0 || !this.rates[this.fromCurrency] || !this.rates[this.toCurrency]) {
-        alert(" ");
-        return;
-      }
-      const rate = this.rates[this.toCurrency] / this.rates[this.fromCurrency];
-      this.result = (this.amount * rate).toFixed(2); // 결과를 소수점 둘째 자리까지 표시
-    },
-  },
-  mounted() {
-    this.fetchRates(); // 컴포넌트 마운트 시 환율 데이터 가져오기
-  },
-};
+const currencies = ref([])
+const fromCurrency = ref(null)
+const toCurrency = ref(null)
+const amount = ref(0)
+const result = ref(null)
+
+// 환율 데이터 가져오기
+const fetchExchangeRates = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/exchange/')
+    currencies.value = response.data
+    
+    // 기본값 설정 (USD와 KRW)
+    fromCurrency.value = currencies.value.find(c => c.cur_unit === 'KRW')
+    toCurrency.value = currencies.value.find(c => c.cur_unit === 'USD')
+  } catch (error) {
+    console.error('환율 데이터를 가져오는 중 오류 발생:', error)
+  }
+}
+
+// 환율 계산 함수 수정
+const calculateExchange = () => {
+  if (!fromCurrency.value || !toCurrency.value || amount.value <= 0) {
+    result.value = null
+    return
+  }
+
+  const getAdjustedRate = (currency) => {
+    const rate = parseFloat(currency.kftc_bkpr.replace(',', ''))
+    // JPY와 IDR은 100단위이므로 100으로 나눔
+    if (currency.cur_unit.includes('JPY') || currency.cur_unit.includes('IDR')) {
+      return rate / 100
+    }
+    return rate
+  }
+
+  const fromRate = getAdjustedRate(fromCurrency.value)
+  const toRate = getAdjustedRate(toCurrency.value)
+  
+  result.value = (amount.value * fromRate) / toRate
+}
+
+// 숫자 포맷팅 (천단위 쉼표)
+const formatNumber = (num) => {
+  return new Intl.NumberFormat().format(num)
+}
+
+// 입력값 변경 감지
+watch([fromCurrency, toCurrency, amount], () => {
+  calculateExchange()
+}, { immediate: true })
+
+onMounted(() => {
+  fetchExchangeRates()
+})
 </script>
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
-  text-align: center;
 }
 
-select,
-input {
-  text-align: center;
+.card {
+  border-radius: 15px;
+  background: #fff;
 }
 
-button {
-  width: 100%;
-  margin-top: 20px;
+.form-select, .form-control {
+  border-radius: 8px;
+}
+
+.alert {
+  border-radius: 8px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .card {
+    padding: 15px !important;
+  }
 }
 </style>
