@@ -1,39 +1,31 @@
-# # serializers.py
-# from rest_framework import serializers
-# from django.contrib.auth import get_user_model
-
-# User = get_user_model()
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ('id', 'username', 'name', 'email', 'age', 'money', 'finance_product', 'password')  # 추가로 password 필드 명시
-#         extra_kwargs = {'password': {'write_only': True}}
-
-#     def create(self, validated_data):
-#         password = validated_data.pop('password')  # 비밀번호 분리
-#         user = User(**validated_data)
-#         user.set_password(password)  # 비밀번호 해싱
-#         user.save()
-#         return user
-
-# class UserLoginSerializer(serializers.Serializer):
-#     username = serializers.CharField()
-#     password = serializers.CharField(write_only=True)
-
-
-# serializers.py
+# accounts/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from products.serializers import DepositProductsSerializer, SavingProductsSerializer
 
 User = get_user_model()
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomRegisterSerializer(RegisterSerializer):
+    name = serializers.CharField(required=False)
+    age = serializers.IntegerField(required=False)
+    money = serializers.IntegerField(required=False)
+
+    def get_cleaned_data(self):
+        data = super().get_cleaned_data()
+        data.update({
+            'name': self.validated_data.get('name', ''),
+            'age': self.validated_data.get('age', 0),
+            'money': self.validated_data.get('money', None),
+        })
+        return data
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    liked_deposits = DepositProductsSerializer(many=True, read_only=True)
+    liked_savings = SavingProductsSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'name', 'age', 'money', 'finance_product')
-        read_only_fields = ('id',)
-
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+        fields = ('id', 'username', 'email', 'name', 'age', 'money', 
+                 'liked_deposits', 'liked_savings')
+        read_only_fields = ('id', 'liked_deposits', 'liked_savings')
