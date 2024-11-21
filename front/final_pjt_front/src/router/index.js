@@ -10,6 +10,7 @@ import ProfileView from '@/views/ProfileView.vue';
 import DetailProduct from '@/views/DetailProdoct.vue';
 import ArticleForm from '@/views/community/ArticleForm.vue';
 import ArticleDetail from '@/views/community/ArticleDetail.vue';
+import CartView from '@/views/CartView.vue';
 
 const routes = [
   {
@@ -81,6 +82,9 @@ const routes = [
     name: 'articleEdit',
     component: ArticleForm
   },
+  { path: "/cart", 
+    name: "CartView", 
+    component: CartView },
 ];
 
 const router = createRouter({
