@@ -85,7 +85,7 @@
 
     <!-- 그래프 보기 -->
     <div v-else>
-      <canvas ref="graphCanvas" width="400" height="400"></canvas>
+      <canvas ref="graphCanvas" width="800" height="600"></canvas>
     </div>
   </div>
 </template>

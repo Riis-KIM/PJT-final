@@ -5,14 +5,14 @@
     <!-- 필터 선택 -->
     <div class="row g-3 mb-4">
       <div class="col-md-3">
-        <label for="province" class="form-label fw-bold">특별시/광역시/도</label>
+        <label for="province" class="form-label fw-bold">시/도</label>
         <select
           id="province"
           class="form-select"
           v-model="selectedProvince"
           @change="fetchCities"
         >
-          <option value="" disabled selected>특별시/광역시/도 선택</option>
+          <option value="" disabled selected>시/도 선택</option>
           <option v-for="province in provinces" :key="province" :value="province">
             {{ province }}
           </option>
