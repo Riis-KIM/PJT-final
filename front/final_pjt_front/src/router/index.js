@@ -1,3 +1,5 @@
+// index.js
+
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import RatesView from '../views/RatesView.vue';
