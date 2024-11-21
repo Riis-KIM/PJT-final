@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useProductStore = defineStore("productStore", {
   state: () => ({
@@ -21,8 +22,22 @@ export const useProductStore = defineStore("productStore", {
     removeFromCart(productId) {
       this.cart = this.cart.filter((item) => item.fin_prdt_cd !== productId);
     },
-    getCart() {
-      return this.cart; // 현재 구매 목록 반환
-    },
-  },
+
+    async getCart() {
+      try {
+        const token = localStorage.getItem("token"); // localStorage 또는 다른 저장소에서 토큰 가져오기
+        const response = await axios.get(`/accounts/custom/myproducts/`, {
+          headers: {
+            Authorization: `Token ${token}`, // 헤더에 토큰 추가
+          },
+        });
+        this.cart = response.data || [];
+
+        return response.data;
+      } catch (error) {
+        console.error("구매 목록을 가져오는 중 오류 발생:", error);
+        return [];
+      }
+    }
+  }
 });
