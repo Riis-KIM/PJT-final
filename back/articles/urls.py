@@ -11,4 +11,5 @@ urlpatterns = [
     # 댓글 관련 URL
     path('<int:article_pk>/comments/', views.comment_create_delete, name='comment_create'),
     path('<int:article_pk>/comments/<int:comment_pk>/', views.comment_create_delete, name='comment_delete'),
+    path('<int:article_pk>/comments/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
 ]
