@@ -62,9 +62,16 @@ const goToDetail = (articleId) => {
   })
 }
 
+// 사용자 정보 가져오기
+const getUserInfo = () => {
+  authStore.fetchUserInfo()
+}
+
 // 컴포넌트 마운트 시 게시글 목록 가져오기
 onMounted(() => {
   articleStore.getArticles()
+  if (authStore.token) {
+    getUserInfo()}
 })
 </script>
 

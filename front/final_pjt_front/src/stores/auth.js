@@ -73,7 +73,9 @@ export const useAuthStore = defineStore('auth', () => {
     })
       .then(() => {
         token.value = null
+        user.value = null
         localStorage.removeItem('token')
+        localStorage.removeItem('user')
         router.push({ name: 'login' })
       })
       .catch((err) => {
@@ -122,8 +124,12 @@ const updateUserInfo = function (userData) {
   // 토큰 초기화
   const initializeToken = function () {
     const storedToken = localStorage.getItem('token')
+    const storedUser = localStorage.getItem('user')
     if (storedToken) {
       token.value = storedToken
+    }
+    if (storedUser) {
+      user.value = JSON.parse(storedUser)  // 저장된 user 정보 불러오기
     }
   }
 
