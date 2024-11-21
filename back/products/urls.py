@@ -9,4 +9,6 @@ urlpatterns = [
     path('savings/', views.saving_list, name='saving_list'),
     path('deposits/<str:fin_prdt_cd>/join/', views.deposit_join, name='deposit_join'),
     path('savings/<str:fin_prdt_cd>/join/', views.saving_join, name='saving_join'),
+    path('deposits/<str:fin_prdt_cd>/popularity/', views.update_deposit_popularity, name='update_deposit_popularity'),
+    path('savings/<str:fin_prdt_cd>/popularity/', views.update_saving_popularity, name='update_saving_popularity'),
 ]

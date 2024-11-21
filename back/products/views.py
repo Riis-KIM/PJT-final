@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
-from .models import DepositProducts, DepositOptions, SavingProducts, SavingOptions
+from .models import DepositProducts, DepositOptions, SavingProducts, SavingOptions, DepositPopularity, SavingPopularity
 from .serializers import (
     DepositProductsSerializer, 
     DepositOptionsSerializer,
@@ -171,3 +171,65 @@ def saving_join(request, fin_prdt_cd):
         joined = True
         
     return Response({'joined': joined})
+
+# 예금 인기도 계산
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_deposit_popularity(request, fin_prdt_cd):
+    product = get_object_or_404(DepositProducts, fin_prdt_cd=fin_prdt_cd)
+    popularity, created = DepositPopularity.objects.get_or_create(product=product)
+    
+    try:
+        # 요청 데이터에 따라 각각의 카운트 증가
+        if 'click' in request.data:
+            popularity.click_count += 1
+        if 'view_time' in request.data:
+            popularity.view_time_count += 1
+        if 'purchase' in request.data:
+            popularity.purchase_count += 1
+        
+        # 가중치를 적용한 인기도 계산
+        popularity.popularity = (
+            popularity.click_count * 2 + 
+            popularity.view_time_count * 3 + 
+            popularity.purchase_count * 5
+        )
+        popularity.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+# 적금 인기도 계산
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_saving_popularity(request, fin_prdt_cd):
+    product = get_object_or_404(SavingProducts, fin_prdt_cd=fin_prdt_cd)
+    popularity, created = SavingPopularity.objects.get_or_create(product=product)
+    
+    try:
+        # 요청 데이터에 따라 각각의 카운트 증가
+        if 'click' in request.data:
+            popularity.click_count += 1
+        if 'view_time' in request.data:
+            popularity.view_time_count += 1
+        if 'purchase' in request.data:
+            popularity.purchase_count += 1
+            
+        # 가중치를 적용한 인기도 계산
+        popularity.popularity = (
+            popularity.click_count * 2 + 
+            popularity.view_time_count * 3 + 
+            popularity.purchase_count * 5
+        )
+        popularity.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
