@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-5">
     <h1 class="fw-bold mb-4">🛒 구매 목록</h1>
-    <div v-if="cart.length">
+    <div v-if="cart?.joined_deposits?.length">
       <table class="table table-striped table-hover">
         <thead class="table-dark">
           <tr>
@@ -12,7 +12,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in cart" :key="item.fin_prdt_cd">
+          <tr v-for="item in cart.joined_deposits" :key="item.fin_prdt_cd">
             <td>{{ item.kor_co_nm }}</td>
             <td>{{ item.fin_prdt_nm }}</td>
             <td>{{ item.options ? getMaxRate(item.options) + "%" : "-" }}</td>
@@ -35,13 +35,28 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import { useProductStore } from "@/stores/productStore";
 
 const productStore = useProductStore();
+const cart = ref(null);
 
-// 구매 목록 가져오기
-const cart = computed(() => productStore.getCart());
+// API를 호출하여 구매 목록 가져오기
+const fetchCart = async () => {
+  try {
+    const token = localStorage.getItem("token"); // 토큰 가져오기
+    const response = await axios.get("/accounts/custom/myproducts/", {
+      headers: {
+        Authorization: `Token ${token}`, // 헤더에 토큰 추가
+      },
+    });
+    cart.value = response.data; // 서버로부터 가져온 데이터를 cart에 저장
+    productStore.setCart(cart.value); // Pinia 스토어에 저장
+  } catch (error) {
+    console.error("구매 목록을 가져오는 중 오류 발생:", error);
+  }
+};
 
 // 최고 금리를 반환하는 함수
 const getMaxRate = (options) => {
@@ -50,9 +65,25 @@ const getMaxRate = (options) => {
 };
 
 // 구매 목록에서 상품 삭제
-const removeFromCart = (productId) => {
-  productStore.removeFromCart(productId);
+const removeFromCart = async (productId) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(`/api/accounts/custom/remove/${productId}/`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    cart.value.joined_deposits = cart.value.joined_deposits.filter(
+      (item) => item.fin_prdt_cd !== productId
+    );
+  } catch (error) {
+    console.error("항목을 제거하는 중 오류 발생:", error);
+  }
 };
+
+onMounted(() => {
+  fetchCart(); // 컴포넌트가 마운트될 때 구매 목록 가져오기
+});
 </script>
 
 <style scoped>
@@ -64,7 +95,8 @@ const removeFromCart = (productId) => {
   text-align: center;
 }
 
-th, td {
+th,
+td {
   vertical-align: middle;
 }
 

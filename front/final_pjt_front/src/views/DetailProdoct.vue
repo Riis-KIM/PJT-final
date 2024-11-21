@@ -41,7 +41,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useProductStore } from "@/stores/productStore"; // Pinia 스토어 사용
-
+import axios from "axios";
 const route = useRoute();
 const productStore = useProductStore();
 const product = ref(null); // 선택된 상품 데이터를 저장
@@ -52,6 +52,29 @@ const formatConditions = (conditions) => {
   return conditions.split("\n").filter((line) => line.trim() !== "");
 };
 
+const addToCart = async () => {
+  try {
+    const response = await axios.post(
+      `api/v1/deposits/${product.value.fin_prdt_cd}/join/`,
+      {}, // 빈 데이터
+      {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`, // 인증 토큰
+        },
+      }
+    );
+    const joined = response.data.joined;
+    if (joined) {
+      alert("구매 목록에 추가되었습니다!");
+    } else {
+      alert("이미 구매 목록에 추가된 상품입니다!");
+    }
+  } catch (error) {
+    console.error("구매 목록에 추가하는 중 오류 발생:", error);
+    alert("구매 목록에 추가하지 못했습니다. 다시 시도해주세요.");
+  }
+};
+
 // 새로고침 시 데이터를 복원하기 위한 함수
 const loadProductFromLocalStorage = () => {
   const storedProduct = localStorage.getItem("selectedProduct");
@@ -59,12 +82,6 @@ const loadProductFromLocalStorage = () => {
     return JSON.parse(storedProduct);
   }
   return null;
-};
-
-// 구매 목록에 추가
-const addToCart = () => {
-  productStore.addToCart(product.value);
-  alert("구매 목록에 추가되었습니다!");
 };
 
 onMounted(() => {
