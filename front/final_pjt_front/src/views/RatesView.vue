@@ -21,14 +21,14 @@
           <button
             class="btn btn-lg"
             :class="productType === 'deposit' ? 'btn-primary' : 'btn-outline-primary'"
-            @click="productType = 'deposit'"
+            @click="setProductType('deposit')"
           >
             예금
           </button>
           <button
             class="btn btn-lg"
             :class="productType === 'saving' ? 'btn-primary' : 'btn-outline-primary'"
-            @click="productType = 'saving'"
+            @click="setProductType('saving')"
           >
             적금
           </button>
@@ -87,6 +87,12 @@ const productType = ref("deposit");
 const router = useRouter();
 const productStore = useProductStore();
 
+
+// 상품 유형 설정 버튼 이벤트
+const setProductType = (type) => {
+  productType.value = type;
+};
+
 // 특정 기간의 금리를 반환하는 함수
 const getTermRate = (options, term) => {
   const option = options?.find((opt) => opt.save_trm === term);
@@ -119,9 +125,8 @@ const fetchData = async () => {
 // 상품 상세 페이지로 이동
 const goToDetail = (item) => {
   productStore.setProduct(item);
-  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd } });
+  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd, type: productType.value } });
 };
-
 // 필터링된 데이터
 const filteredData = computed(() => {
   let filtered = tableData.value[productType.value] || [];

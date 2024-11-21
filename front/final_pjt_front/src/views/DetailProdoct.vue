@@ -42,9 +42,11 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useProductStore } from "@/stores/productStore"; // Pinia 스토어 사용
 import axios from "axios";
+
 const route = useRoute();
 const productStore = useProductStore();
 const product = ref(null); // 선택된 상품 데이터를 저장
+const type = ref(route.params.type); // type 값을 route에서 받아옴
 
 // 우대 조건 포맷팅 함수
 const formatConditions = (conditions) => {
@@ -52,10 +54,23 @@ const formatConditions = (conditions) => {
   return conditions.split("\n").filter((line) => line.trim() !== "");
 };
 
+// 가입 경로를 설정하는 함수
+const getJoinUrl = () => {
+  if (type.value === "deposit") {
+    return `/api/v1/deposits/${product.value.fin_prdt_cd}/join/`;
+  } else if (type.value === "saving") {
+    return `/api/v1/savings/${product.value.fin_prdt_cd}/join/`;
+  } else {
+    throw new Error("잘못된 상품 유형입니다."); // 잘못된 type 처리
+  }
+};
+
+// 구매 목록에 추가
 const addToCart = async () => {
   try {
+    const joinUrl = getJoinUrl(); // 동적으로 경로 생성
     const response = await axios.post(
-      `api/v1/deposits/${product.value.fin_prdt_cd}/join/`,
+      joinUrl,
       {}, // 빈 데이터
       {
         headers: {
@@ -85,6 +100,7 @@ const loadProductFromLocalStorage = () => {
 };
 
 onMounted(() => {
+  console.log(type.value)
   const storedProduct = loadProductFromLocalStorage();
 
   // Pinia 스토어에서 데이터를 가져오거나 localStorage에서 복원

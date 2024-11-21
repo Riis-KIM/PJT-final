@@ -165,9 +165,9 @@ def saving_join(request, fin_prdt_cd):
     
     if user.joined_savings.filter(fin_prdt_cd=fin_prdt_cd).exists():
         user.joined_savings.remove(product)
-        joined = joined
+        joined = False
     else:
         user.joined_savings.add(product)
-        joined = joined
+        joined = True
         
     return Response({'joined': joined})
