@@ -35,3 +35,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'name', 'age', 'money', 
                  'liked_deposits', 'liked_savings')
         read_only_fields = ('id', 'liked_deposits', 'liked_savings')
+
+class UserProductSerializer(serializers.ModelSerializer):
+    joined_deposits = DepositProductsSerializer(many=True, read_only=True)
+    joined_savings = SavingProductsSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'joined_deposits', 'joined_savings')
