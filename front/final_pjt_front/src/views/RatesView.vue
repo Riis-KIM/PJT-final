@@ -1,30 +1,32 @@
 <template>
   <div class="container mt-5">
-    <h1 class="fw-bold mb-4">🔍 금리 검색</h1>
+    <div class="text-center">
+      <h1 class="fw-bold mb-4">🔍 금리 검색</h1>
+    </div>
 
     <!-- 검색 및 필터 -->
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label for="bankFilter" class="form-label">은행 선택</label>
+    <div class="row mb-4">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <label for="bankFilter" class="form-label fw-semibold">은행 선택</label>
         <input
           id="bankFilter"
           type="text"
-          class="form-control"
+          class="form-control form-control-lg"
           placeholder="은행명을 입력하세요"
           v-model="searchQuery"
         />
       </div>
-      <div class="col-md-6 d-flex align-items-end justify-content-end">
+      <div class="col-lg-6 col-md-8 mx-auto text-center mt-3">
         <div class="btn-group">
-          <button 
-            class="btn" 
+          <button
+            class="btn btn-lg"
             :class="productType === 'deposit' ? 'btn-primary' : 'btn-outline-primary'"
             @click="productType = 'deposit'"
           >
             예금
           </button>
-          <button 
-            class="btn" 
+          <button
+            class="btn btn-lg"
             :class="productType === 'saving' ? 'btn-primary' : 'btn-outline-primary'"
             @click="productType = 'saving'"
           >
@@ -35,48 +37,46 @@
     </div>
 
     <!-- 테이블 -->
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th @click="sortTable('kor_co_nm')" style="cursor: pointer;">금융회사명</th>
-          <th @click="sortTable('fin_prdt_nm')" style="cursor: pointer;">상품명</th>
-          <th @click="sortTable('maxRate')" style="cursor: pointer;">최고금리</th>
-          <th>6개월</th>
-          <th>12개월</th>
-          <th>24개월</th>
-          <th>36개월</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in filteredData" :key="item.fin_prdt_cd">
-          <td>{{ item.kor_co_nm }}</td>
-          <td>
-            <router-link
-              :to="{ 
-                name: 'DetailProduct', 
-                params: { id: item.fin_prdt_cd }, 
-                query: { product: JSON.stringify(item) } 
-              }"
-              class="text-decoration-none text-primary fw-bold"
-            >
-              {{ item.fin_prdt_nm }}
-            </router-link>
-          </td>
-          <td>{{ getMaxRate(item.options) }}%</td>
-          <td>{{ getTermRate(item.options, 6) }}</td>
-          <td>{{ getTermRate(item.options, 12) }}</td>
-          <td>{{ getTermRate(item.options, 24) }}</td>
-          <td>{{ getTermRate(item.options, 36) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th @click="sortTable('kor_co_nm')" class="sortable">금융회사명</th>
+            <th @click="sortTable('fin_prdt_nm')" class="sortable">상품명</th>
+            <th @click="sortTable('maxRate')" class="sortable">최고금리</th>
+            <th>6개월</th>
+            <th>12개월</th>
+            <th>24개월</th>
+            <th>36개월</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in filteredData" :key="item.fin_prdt_cd">
+            <td>{{ item.kor_co_nm }}</td>
+            <td>
+              <button
+                class="btn btn-link p-0 text-decoration-none product-name"
+                @click="goToDetail(item)"
+              >
+                {{ item.fin_prdt_nm }}
+              </button>
+            </td>
+            <td>{{ getMaxRate(item.options) }}%</td>
+            <td>{{ getTermRate(item.options, 6) }}</td>
+            <td>{{ getTermRate(item.options, 12) }}</td>
+            <td>{{ getTermRate(item.options, 24) }}</td>
+            <td>{{ getTermRate(item.options, 36) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useProductStore } from "@/stores/productStore"; // Pinia 스토어 임포트
+import { useProductStore } from "@/stores/productStore";
 import axios from "axios";
 
 const searchQuery = ref("");
@@ -85,7 +85,7 @@ const sortOrder = ref(1);
 const tableData = ref([]);
 const productType = ref("deposit");
 const router = useRouter();
-const productStore = useProductStore(); // Pinia 스토어 사용
+const productStore = useProductStore();
 
 // 특정 기간의 금리를 반환하는 함수
 const getTermRate = (options, term) => {
@@ -118,8 +118,8 @@ const fetchData = async () => {
 
 // 상품 상세 페이지로 이동
 const goToDetail = (item) => {
-  productStore.setProduct(item); // Pinia에 상품 데이터 저장
-  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd } }); // URL에 상품 ID만 포함
+  productStore.setProduct(item);
+  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd } });
 };
 
 // 필터링된 데이터
@@ -162,7 +162,6 @@ onMounted(() => {
 
 <style scoped>
 table {
-  width: 100%;
   text-align: center;
 }
 
@@ -173,5 +172,26 @@ th {
 
 th:hover {
   background-color: #e9ecef;
+}
+
+/* 상품명 버튼 스타일 */
+.product-name {
+  font-weight: bold;
+  color: #495057;
+  transition: color 0.3s;
+}
+
+.product-name:hover {
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.btn-group {
+  margin-bottom: 1rem;
+}
+
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
 }
 </style>
