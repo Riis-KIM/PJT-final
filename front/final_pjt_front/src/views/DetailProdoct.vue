@@ -23,6 +23,12 @@
         <p class="card-text">
           <strong>가입방법:</strong> {{ product.join_way }}
         </p>
+        <!-- 구매 목록에 추가 버튼 -->
+        <div class="text-center mt-4">
+          <button class="btn btn-primary btn-lg" @click="addToCart">
+            구매 목록에 추가
+          </button>
+        </div>
       </div>
     </div>
     <div v-else class="text-center mt-5">
@@ -32,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useProductStore } from "@/stores/productStore"; // Pinia 스토어 사용
 
@@ -53,6 +59,12 @@ const loadProductFromLocalStorage = () => {
     return JSON.parse(storedProduct);
   }
   return null;
+};
+
+// 구매 목록에 추가
+const addToCart = () => {
+  productStore.addToCart(product.value);
+  alert("구매 목록에 추가되었습니다!");
 };
 
 onMounted(() => {
