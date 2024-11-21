@@ -24,6 +24,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav mx-auto">
             <li class="nav-item">
+              <router-link to="/recommendations" class="nav-link fw-bold">금융상품추천</router-link>
+            </li>
+            <li class="nav-item">
               <router-link to="/rates" class="nav-link fw-bold">금리비교</router-link>
             </li>
             <li class="nav-item">
@@ -41,7 +44,7 @@
           <div class="d-flex align-items-center">
             <!-- 내 정보 페이지로 이동 -->
             <router-link to="/profile" class="me-3 text-dark">
-              <i class="bi bi-person fs-5"></i> <!-- 사람 모양 아이콘으로 교체 -->
+              <i class="bi bi-person fs-5"></i> <!-- 사람 모양 아이콘 -->
             </router-link>
             <router-link to="/favorites" class="me-3 text-dark">
               <i class="bi bi-heart fs-5"></i>
