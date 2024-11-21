@@ -65,3 +65,17 @@ def comment_create_delete(request, article_pk, comment_pk=None):
                 comment.delete()
                 return Response({'detail': '댓글이 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
             return Response({'detail': '권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+
+# 댓글 수정
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def comment_update(request, article_pk, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    
+    if request.user != comment.user:
+        return Response({'detail': '권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+    
+    serializer = CommentSerializer(comment, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
