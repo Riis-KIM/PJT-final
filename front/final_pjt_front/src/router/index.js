@@ -13,6 +13,7 @@ import DetailProduct from '@/views/DetailProdoct.vue';
 import ArticleForm from '@/views/community/ArticleForm.vue';
 import ArticleDetail from '@/views/community/ArticleDetail.vue';
 import CartView from '@/views/CartView.vue';
+import ProductRecommendations from '@/views/ProductRecommendations.vue'
 
 const routes = [
   {
@@ -86,7 +87,14 @@ const routes = [
   },
   { path: "/cart", 
     name: "CartView", 
-    component: CartView },
+    component: CartView 
+  },
+  {
+    path: "/recommendations",
+    name: "ProductRecommendations",
+    component: ProductRecommendations,
+  },
+    
 ];
 
 const router = createRouter({
