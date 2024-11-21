@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onBeforeMount } from 'vue'
 import axios from 'axios'
 
 const currencies = ref([])
@@ -114,7 +114,7 @@ watch([fromCurrency, toCurrency, amount], () => {
   calculateExchange()
 }, { immediate: true })
 
-onMounted(() => {
+onBeforeMount(() => {
   fetchExchangeRates()
 })
 </script>
