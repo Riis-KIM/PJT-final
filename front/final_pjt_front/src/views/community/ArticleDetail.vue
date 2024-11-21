@@ -45,19 +45,50 @@
                :key="comment.id" 
                class="border-bottom py-3">
             <div class="d-flex justify-content-between">
-              <div>
+              <div class="w-100">
                 <strong>{{ comment.username }}</strong>
-                <p class="mb-1">{{ comment.content }}</p>
-                <small class="text-muted">{{ formatDate(comment.created_at) }}</small>
+                <!-- 수정 모드일 때는 입력창, 아닐 때는 텍스트 표시 -->
+                <div v-if="editingCommentId === comment.id">
+                  <textarea 
+                    v-model="editingContent" 
+                    class="form-control my-2"
+                    rows="2"
+                  ></textarea>
+                  <div class="d-flex gap-2">
+                    <button 
+                      class="btn btn-sm btn-success"
+                      @click="updateComment(comment.id)"
+                    >
+                      확인
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-secondary"
+                      @click="cancelEdit"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+                <div v-else>
+                  <p class="mb-1">{{ comment.content }}</p>
+                  <small class="text-muted">{{ formatDate(comment.created_at) }}</small>
+                </div>
               </div>
-              <!-- 댓글 삭제 버튼 (작성자인 경우만 표시) -->
-              <button 
-                v-if="comment.username === authStore.user?.username"
-                class="btn btn-sm btn-danger"
-                @click="deleteComment(comment.id)"
-              >
-                삭제
-              </button>
+              <!-- 댓글 수정/삭제 버튼 (작성자인 경우만 표시) -->
+              <div v-if="comment.username === authStore.user?.username">
+                <button 
+                  class="btn btn-sm btn-warning me-2"
+                  @click="startEdit(comment)"
+                >
+                  수정
+                </button>
+                <button 
+                  class="btn btn-sm btn-danger"
+                  @click="deleteComment(comment.id)"
+                >
+                  삭제
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -78,6 +109,8 @@ const articleStore = useArticleStore()
 const authStore = useAuthStore()
 
 const commentContent = ref('')
+const editingCommentId = ref(null)
+const editingContent = ref('')
 
 // 현재 사용자가 글 작성자인지 확인
 const isAuthor = computed(() => {
@@ -123,6 +156,31 @@ const deleteComment = async (commentId) => {
   }
 }
 
+// 댓글 수정 시작
+const startEdit = (comment) => {
+  editingCommentId.value = comment.id
+  editingContent.value = comment.content
+}
+
+// 댓글 수정 취소
+const cancelEdit = () => {
+  editingCommentId.value = null
+  editingContent.value = ''
+}
+
+// 댓글 수정 제출
+const updateComment = async (commentId) => {
+  if (!editingContent.value.trim()) {
+    alert('내용을 입력해주세요.')
+    return
+  }
+
+  await articleStore.updateComment(route.params.id, commentId, {
+    content: editingContent.value
+  })
+  cancelEdit()
+}
+
 // 컴포넌트 마운트 시 게시글 정보 가져오기
 onMounted(() => {
   articleStore.getArticle(route.params.id)
@@ -137,5 +195,9 @@ onMounted(() => {
 .btn-sm {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
+}
+
+.w-100 {
+  width: 100%;
 }
 </style>

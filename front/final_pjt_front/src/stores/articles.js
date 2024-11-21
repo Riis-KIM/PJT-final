@@ -142,6 +142,32 @@ const getArticle = function(articleId) {
       })
   }
 
+// 댓글 수정
+const updateComment = function(articleId, commentId, commentData) {
+  axios({
+    method: 'put',
+    url: `/articles/${articleId}/comments/${commentId}/update/`,
+    data: {
+      content: commentData.content
+    },
+    headers: {
+      Authorization: `Token ${authStore.token}`
+    }
+  })
+    .then((res) => {
+      // 현재 게시글의 댓글 목록에서 수정된 댓글 찾아서 업데이트
+      const commentIndex = article.value.comments.findIndex(c => c.id === commentId)
+      if (commentIndex !== -1) {
+        article.value.comments[commentIndex] = res.data
+      }
+      alert('댓글이 수정되었습니다.')
+    })
+    .catch((err) => {
+      console.error(err)
+      alert('댓글 수정에 실패했습니다.')
+    })
+}
+
   return {
     articles,
     article,
@@ -151,6 +177,7 @@ const getArticle = function(articleId) {
     updateArticle,
     deleteArticle,
     createComment,
-    deleteComment
+    deleteComment,
+    updateComment,
   }
 })
