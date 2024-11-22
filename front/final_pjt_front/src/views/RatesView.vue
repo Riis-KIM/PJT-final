@@ -78,6 +78,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useProductStore } from "@/stores/productStore";
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 
 const searchQuery = ref("");
 const sortKey = ref("");
@@ -86,7 +87,7 @@ const tableData = ref([]);
 const productType = ref("deposit");
 const router = useRouter();
 const productStore = useProductStore();
-
+const authStore = useAuthStore();
 
 // 상품 유형 설정 버튼 이벤트
 const setProductType = (type) => {
@@ -122,11 +123,40 @@ const fetchData = async () => {
   }
 };
 
-// 상품 상세 페이지로 이동
-const goToDetail = (item) => {
-  productStore.setProduct(item);
-  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd, type: productType.value } });
-};
+const goToDetail = async (item) => {
+  try {
+    // 상품 클릭 시 인기도 업데이트 요청
+    await axios({
+      method: 'put',
+      url: `/api/v1/${productType.value}s/${item.fin_prdt_cd}/popularity/`,
+      data: { click: true },
+      headers: {
+        Authorization: `Token ${authStore.token}`
+      }
+    })
+
+    // 기존 페이지 이동 로직
+    productStore.setProduct(item);
+    router.push({ 
+      name: "DetailProduct", 
+      params: { 
+        id: item.fin_prdt_cd, 
+        type: productType.value 
+      }
+    });
+  } catch (error) {
+    console.error('인기도 업데이트 실패:', error);
+    // 에러가 발생해도 페이지 이동은 진행
+    productStore.setProduct(item);
+    router.push({ 
+      name: "DetailProduct", 
+      params: { 
+        id: item.fin_prdt_cd, 
+        type: productType.value 
+      }
+    });
+  }
+}
 // 필터링된 데이터
 const filteredData = computed(() => {
   let filtered = tableData.value[productType.value] || [];
