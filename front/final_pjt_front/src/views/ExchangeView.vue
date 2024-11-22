@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onBeforeMount } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 
 const currencies = ref([])
@@ -69,20 +69,24 @@ const amount = ref(0)
 const result = ref(null)
 
 // 환율 데이터 가져오기
-const fetchExchangeRates = async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/exchange/')
-    currencies.value = response.data
-    
-    // 기본값 설정 (USD와 KRW)
-    fromCurrency.value = currencies.value.find(c => c.cur_unit === 'KRW')
-    toCurrency.value = currencies.value.find(c => c.cur_unit === 'USD')
-  } catch (error) {
-    console.error('환율 데이터를 가져오는 중 오류 발생:', error)
-  }
+const fetchExchangeRates = () => {
+  axios({
+    method: 'get',
+    url: 'http://127.0.0.1:8000/exchange/'
+  })
+    .then((response) => {
+      currencies.value = response.data
+      // 데이터 로드 후 기본값 설정
+      fromCurrency.value = currencies.value.find(c => c.cur_unit === 'KRW')
+      toCurrency.value = currencies.value.find(c => c.cur_unit === 'USD')
+      calculateExchange()  // 초기 계산 실행
+    })
+    .catch((err) => {
+      console.error('환율 데이터를 가져오는 중 오류 발생:', err)
+    })
 }
 
-// 환율 계산 함수 수정
+// 환율 계산 함수
 const calculateExchange = () => {
   if (!fromCurrency.value || !toCurrency.value || amount.value <= 0) {
     result.value = null
@@ -91,11 +95,7 @@ const calculateExchange = () => {
 
   const getAdjustedRate = (currency) => {
     const rate = parseFloat(currency.kftc_bkpr.replace(',', ''))
-    // JPY와 IDR은 100단위이므로 100으로 나눔
-    if (currency.cur_unit.includes('JPY') || currency.cur_unit.includes('IDR')) {
-      return rate / 100
-    }
-    return rate
+    return currency.cur_unit.includes('JPY') || currency.cur_unit.includes('IDR') ? rate / 100 : rate
   }
 
   const fromRate = getAdjustedRate(fromCurrency.value)
@@ -104,7 +104,7 @@ const calculateExchange = () => {
   result.value = (amount.value * fromRate) / toRate
 }
 
-// 숫자 포맷팅 (천단위 쉼표)
+// 숫자 포맷팅
 const formatNumber = (num) => {
   return new Intl.NumberFormat().format(num)
 }
@@ -112,9 +112,9 @@ const formatNumber = (num) => {
 // 입력값 변경 감지
 watch([fromCurrency, toCurrency, amount], () => {
   calculateExchange()
-}, { immediate: true })
+})
 
-onBeforeMount(() => {
+onMounted(() => {
   fetchExchangeRates()
 })
 </script>
@@ -138,7 +138,6 @@ onBeforeMount(() => {
   border-radius: 8px;
 }
 
-/* 반응형 디자인 */
 @media (max-width: 768px) {
   .container {
     padding: 15px;
