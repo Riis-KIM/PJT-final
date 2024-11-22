@@ -50,7 +50,7 @@
             {{ formatNumber(result) }} {{ toCurrency?.cur_unit }}
           </h4>
           <small class="text-muted">
-            기준 환율: {{ fromCurrency?.cur_unit }} = {{ fromCurrency?.kftc_bkpr }}원
+            기준 환율: {{ toCurrency?.cur_unit }} = {{ toCurrency?.kftc_bkpr }}원
           </small>
         </div>
       </div>
