@@ -27,6 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
     })
       .then(() => {
         router.push({ name: 'login' });
+        alert('회원가입이 완료되었습니다.')
       })
       .catch((err) => {
         console.error(err);
