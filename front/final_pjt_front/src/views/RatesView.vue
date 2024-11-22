@@ -6,7 +6,7 @@
 
     <!-- 검색 및 필터 -->
     <div class="row mb-4">
-      <div class="col-lg-6 col-md-8 mx-auto">
+      <div class="col-lg-6 col-md-8 mx-auto position-relative search-container">
         <label for="bankFilter" class="form-label fw-semibold">은행 선택</label>
         <input
           id="bankFilter"
@@ -15,6 +15,13 @@
           placeholder="은행명을 입력하세요"
           v-model="searchQuery"
         />
+        <button
+          v-if="searchQuery"
+          class="btn clear-btn"
+          @click="clearSearch"
+        >
+          ×
+        </button>
       </div>
       <div class="col-lg-6 col-md-8 mx-auto text-center mt-3">
         <div class="btn-group">
@@ -87,7 +94,14 @@ const tableData = ref([]);
 const productType = ref("deposit");
 const router = useRouter();
 const productStore = useProductStore();
+
+// 검색어 초기화 함수
+const clearSearch = () => {
+  searchQuery.value = "";
+};
+
 const authStore = useAuthStore();
+
 
 // 상품 유형 설정 버튼 이벤트
 const setProductType = (type) => {
@@ -123,6 +137,8 @@ const fetchData = async () => {
   }
 };
 
+
+// 상품 상세 페이지로 이동
 const goToDetail = async (item) => {
   try {
     // 상품 클릭 시 인기도 업데이트 요청
@@ -157,6 +173,7 @@ const goToDetail = async (item) => {
     });
   }
 }
+
 // 필터링된 데이터
 const filteredData = computed(() => {
   let filtered = tableData.value[productType.value] || [];
@@ -209,7 +226,6 @@ th:hover {
   background-color: #e9ecef;
 }
 
-/* 상품명 버튼 스타일 */
 .product-name {
   font-weight: bold;
   color: #495057;
@@ -228,5 +244,27 @@ th:hover {
 .table-responsive {
   max-width: 100%;
   overflow-x: auto;
+}
+
+/* 검색창 초기화 버튼 스타일 */
+/* 검색창 초기화 버튼 스타일 */
+.clear-btn {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  height: 130%; /* 부모 요소 높이에 맞추기 */
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  color: #495057;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-btn:hover {
+  color: #0d6efd;
 }
 </style>

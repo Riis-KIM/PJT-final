@@ -1,17 +1,17 @@
 // store/auth.js
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue';
+import { defineStore } from 'pinia';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', () => {
-  const router = useRouter()
-  const token = ref(null)
-  const user = ref(null)
+  const router = useRouter();
+  const token = ref(null);
+  const user = ref(null);
 
   const isAuthenticated = computed(() => {
-    return token.value !== null
-  })
+    return token.value !== null;
+  });
 
   // 회원가입
   const register = function (payload) {
@@ -22,23 +22,22 @@ export const useAuthStore = defineStore('auth', () => {
         username: payload.username,
         password1: payload.password1,
         password2: payload.password2,
-        email: payload.email
-      }
+        email: payload.email,
+      },
     })
       .then(() => {
-        router.push({ name: 'login' })
+        router.push({ name: 'login' });
       })
       .catch((err) => {
-        console.error(err)
+        console.error(err);
         if (err.response?.data) {
-          // Django에서 보내는 에러 메시지 표시
-          const errorMessage = Object.values(err.response.data).flat().join('\n')
-          alert(errorMessage)
+          const errorMessage = Object.values(err.response.data).flat().join('\n');
+          alert(errorMessage);
         } else {
-          alert('회원가입 중 오류가 발생했습니다.')
+          alert('회원가입 중 오류가 발생했습니다.');
         }
-      })
-  }
+      });
+  };
 
   // 로그인
   const login = function (payload) {
@@ -47,20 +46,20 @@ export const useAuthStore = defineStore('auth', () => {
       url: '/accounts/login/',
       data: {
         username: payload.username,
-        password: payload.password
-      }
+        password: payload.password,
+      },
     })
       .then((res) => {
-        token.value = res.data.key
-        localStorage.setItem('token', res.data.key)
-        fetchUserInfo()
-        router.push({ name: 'home' })
+        token.value = res.data.key;
+        localStorage.setItem('token', res.data.key);
+        fetchUserInfo(); // 사용자 정보 가져오기
+        router.push({ name: 'home' });
       })
       .catch((err) => {
-        console.error(err)
-        alert('로그인에 실패했습니다.')
-      })
-  }
+        console.error(err);
+        alert('로그인에 실패했습니다.');
+      });
+  };
 
   // 로그아웃
   const logout = function () {
@@ -68,70 +67,73 @@ export const useAuthStore = defineStore('auth', () => {
       method: 'post',
       url: '/accounts/logout/',
       headers: {
-        Authorization: `Token ${token.value}`
-      }
+        Authorization: `Token ${token.value}`,
+      },
     })
       .then(() => {
-        token.value = null
-        user.value = null
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        router.push({ name: 'login' })
+        token.value = null;
+        user.value = null;
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        router.push({ name: 'login' });
       })
       .catch((err) => {
-        console.error(err)
+        console.error(err);
+      });
+  };
+
+  // 사용자 정보 조회
+  const fetchUserInfo = function () {
+    axios({
+      method: 'get',
+      url: '/accounts/user/',
+      headers: {
+        Authorization: `Token ${token.value}`,
+      },
+    })
+      .then((response) => {
+        user.value = response.data;
+        localStorage.setItem('user', JSON.stringify(response.data)); // 사용자 정보 저장
       })
-  }
+      .catch((err) => {
+        console.error(err);
+        alert('사용자 정보를 불러오는데 실패했습니다.');
+      });
+  };
 
-// 사용자 정보 조회
-const fetchUserInfo = function () {
-  axios({
-    method: 'get',
-    url: '/accounts/user/',
-    headers: {
-      Authorization: `Token ${token.value}`
-    }
-  })
-    .then((response) => {
-      user.value = response.data
+  // 사용자 정보 수정
+  const updateUserInfo = function (userData) {
+    axios({
+      method: 'patch',
+      url: '/accounts/user/',
+      headers: {
+        Authorization: `Token ${token.value}`,
+      },
+      data: userData,
     })
-    .catch((err) => {
-      console.error(err)
-      alert('사용자 정보를 불러오는데 실패했습니다.')
-    })
-}
+      .then((response) => {
+        user.value = response.data;
+        alert('프로필이 성공적으로 업데이트되었습니다.');
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('프로필 업데이트에 실패했습니다.');
+      });
+  };
 
-// 사용자 정보 수정
-const updateUserInfo = function (userData) {
-  axios({
-    method: 'patch',
-    url: '/accounts/user/',
-    headers: {
-      Authorization: `Token ${token.value}`
-    },
-    data: userData
-  })
-    .then((response) => {
-      user.value = response.data
-      alert('프로필이 성공적으로 업데이트되었습니다.')
-    })
-    .catch((err) => {
-      console.error(err)
-      alert('프로필 업데이트에 실패했습니다.')
-    })
-}
-
-  // 토큰 초기화
+  // 토큰 및 사용자 정보 초기화
   const initializeToken = function () {
-    const storedToken = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
     if (storedToken) {
-      token.value = storedToken
+      token.value = storedToken;
     }
     if (storedUser) {
-      user.value = JSON.parse(storedUser)  // 저장된 user 정보 불러오기
+      user.value = JSON.parse(storedUser); // 저장된 user 정보 불러오기
+    } else if (storedToken) {
+      fetchUserInfo(); // user 정보가 없으면 서버에서 다시 가져오기
     }
-  }
+  };
 
   return {
     token,
@@ -142,10 +144,10 @@ const updateUserInfo = function (userData) {
     logout,
     initializeToken,
     fetchUserInfo,
-    updateUserInfo
-  }
+    updateUserInfo,
+  };
 }, {
   persist: {
-    paths: ['token', 'user']
-  }
-})
+    paths: ['token', 'user'],
+  },
+});
