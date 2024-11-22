@@ -1,11 +1,9 @@
 <template>
   <div class="container mt-5">
     <!-- 환율 계산기 헤더 -->
-    <section class="d-flex justify-content-between align-items-center mb-4 section-header">
-      <div>
-        <h1 class="fw-bold mb-2 section-title">환율 계산기</h1>
-        <p class="lead section-subtitle">간편하게 환율을 계산해보세요</p>
-      </div>
+    <section class="header-section mb-4">
+      <h1 class="fw-bold mb-2 section-title">환율 계산기</h1>
+      <p class="lead section-subtitle">간편하게 환율을 계산해보세요</p>
     </section>
 
     <!-- 환율 계산기 카드 -->
@@ -121,10 +119,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 전체 컨테이너 */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
+/* 헤더 스타일 */
+.header-section {
+  text-align: left;
+  padding-left: 0; /* 왼쪽 패딩 제거 */
+}
+
+.section-title {
+  font-size: 2.2rem;
+  color: #343a40;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #868e96;
 }
 
 /* 카드 스타일 */
@@ -132,6 +140,7 @@ onMounted(() => {
   border-radius: 15px;
   background: #f8f9fa;
   border: 1px solid #dee2e6;
+  margin-left: 0; /* 왼쪽 여백 제거 */
 }
 
 /* 폼 스타일 */
