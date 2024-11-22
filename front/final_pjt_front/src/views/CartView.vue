@@ -112,19 +112,22 @@ const chartInstance = ref(null); // Chart.js 인스턴스
 const graphCanvas = ref(null); // 그래프 캔버스 참조
 
 // API를 호출하여 구매 목록 가져오기
-const fetchCart = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get("/accounts/custom/myproducts/", {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    });
-    cart.value = response.data;
-  } catch (error) {
-    console.error("구매 목록을 가져오는 중 오류 발생:", error);
-  }
-};
+const fetchCart = () => {
+  const token = localStorage.getItem("token")
+  axios({
+    method: 'get',
+    url: '/accounts/custom/myproducts/',
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+    .then((response) => {
+      cart.value = response.data
+    })
+    .catch((err) => {
+      console.error("구매 목록을 가져오는 중 오류 발생:", err)
+    })
+}
 
 // 최고 금리를 반환하는 함수
 const getMaxRate = (options) => {
@@ -133,40 +136,46 @@ const getMaxRate = (options) => {
 };
 
 // 예금 삭제
-const removeDeposit = async (productId) => {
-  try {
-    const token = localStorage.getItem("token");
-    await axios.post(`/api/v1/deposits/${productId}/join/`, null, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    });
-    cart.value.joined_deposits = cart.value.joined_deposits.filter(
-      (item) => item.fin_prdt_cd !== productId
-    );
-    alert("예금 상품이 삭제되었습니다.");
-  } catch (error) {
-    console.error("예금 항목을 제거하는 중 오류 발생:", error);
-  }
-};
+const removeDeposit = (productId) => {
+  const token = localStorage.getItem("token")
+  axios({
+    method: 'post',
+    url: `/api/v1/deposits/${productId}/join/`,
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+    .then(() => {
+      cart.value.joined_deposits = cart.value.joined_deposits.filter(
+        (item) => item.fin_prdt_cd !== productId
+      )
+      alert("예금 상품이 삭제되었습니다.")
+    })
+    .catch((err) => {
+      console.error("예금 항목을 제거하는 중 오류 발생:", err)
+    })
+}
 
 // 적금 삭제
-const removeSaving = async (productId) => {
-  try {
-    const token = localStorage.getItem("token");
-    await axios.post(`/api/v1/savings/${productId}/join/`, null, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    });
-    cart.value.joined_savings = cart.value.joined_savings.filter(
-      (item) => item.fin_prdt_cd !== productId
-    );
-    alert("적금 상품이 삭제되었습니다.");
-  } catch (error) {
-    console.error("적금 항목을 제거하는 중 오류 발생:", error);
-  }
-};
+const removeSaving = (productId) => {
+  const token = localStorage.getItem("token")
+  axios({
+    method: 'post',
+    url: `/api/v1/savings/${productId}/join/`,
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+    .then(() => {
+      cart.value.joined_savings = cart.value.joined_savings.filter(
+        (item) => item.fin_prdt_cd !== productId
+      )
+      alert("적금 상품이 삭제되었습니다.")
+    })
+    .catch((err) => {
+      console.error("적금 항목을 제거하는 중 오류 발생:", err)
+    })
+}
 
 // 그래프 렌더링
 const renderGraph = async () => {

@@ -84,8 +84,8 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useProductStore } from "@/stores/productStore";
-import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
+import axios from "axios";
 
 const searchQuery = ref("");
 const sortKey = ref("");
@@ -94,14 +94,12 @@ const tableData = ref([]);
 const productType = ref("deposit");
 const router = useRouter();
 const productStore = useProductStore();
+const authStore = useAuthStore();
 
 // 검색어 초기화 함수
 const clearSearch = () => {
   searchQuery.value = "";
 };
-
-const authStore = useAuthStore();
-
 
 // 상품 유형 설정 버튼 이벤트
 const setProductType = (type) => {
@@ -121,57 +119,52 @@ const getMaxRate = (options) => {
 };
 
 // API 호출
-const fetchData = async () => {
-  try {
-    const [depositResponse, savingResponse] = await Promise.all([
-      axios.get("http://127.0.0.1:8000/api/v1/deposits/"),
-      axios.get("http://127.0.0.1:8000/api/v1/savings/"),
-    ]);
-
-    tableData.value = {
-      deposit: depositResponse.data,
-      saving: savingResponse.data,
-    };
-  } catch (error) {
-    console.error("데이터를 가져오는 중 오류 발생:", error);
-  }
-};
-
+const fetchData = () => {
+  axios({
+    method: 'get',
+    url: 'http://127.0.0.1:8000/api/v1/deposits/'
+  })
+    .then((depositResponse) => {
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/api/v1/savings/'
+      })
+        .then((savingResponse) => {
+          tableData.value = {
+            deposit: depositResponse.data,
+            saving: savingResponse.data
+          }
+        })
+    })
+    .catch((err) => {
+      console.error("데이터를 가져오는 중 오류 발생:", err)
+    })
+}
 
 // 상품 상세 페이지로 이동
-const goToDetail = async (item) => {
-  try {
-    // 상품 클릭 시 인기도 업데이트 요청
-    await axios({
-      method: 'put',
-      url: `/api/v1/${productType.value}s/${item.fin_prdt_cd}/popularity/`,
-      data: { click: true },
-      headers: {
-        Authorization: `Token ${authStore.token}`
-      }
+const goToDetail = (item) => {
+  // 상품 클릭 시 인기도 업데이트 요청
+  axios({
+    method: 'put',
+    url: `/api/v1/${productType.value}s/${item.fin_prdt_cd}/popularity/`,
+    data: { click: true },
+    headers: {
+      Authorization: `Token ${authStore.token}`
+    }
+  })
+    .catch((err) => {
+      console.error('인기도 업데이트 실패:', err)
     })
-
-    // 기존 페이지 이동 로직
-    productStore.setProduct(item);
-    router.push({ 
-      name: "DetailProduct", 
-      params: { 
-        id: item.fin_prdt_cd, 
-        type: productType.value 
-      }
-    });
-  } catch (error) {
-    console.error('인기도 업데이트 실패:', error);
-    // 에러가 발생해도 페이지 이동은 진행
-    productStore.setProduct(item);
-    router.push({ 
-      name: "DetailProduct", 
-      params: { 
-        id: item.fin_prdt_cd, 
-        type: productType.value 
-      }
-    });
-  }
+  
+  // 페이지 이동
+  productStore.setProduct(item)
+  router.push({ 
+    name: "DetailProduct", 
+    params: { 
+      id: item.fin_prdt_cd, 
+      type: productType.value 
+    }
+  })
 }
 
 // 필터링된 데이터
