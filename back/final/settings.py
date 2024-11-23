@@ -53,6 +53,8 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+SITE_NAME = "금융상품 비교 서비스"
+SITE_DOMAIN = "localhost:5173"
 
 REST_FRAMEWORK = {
     # Authentication
@@ -162,14 +164,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # 이메일 인증 비활성화
-ACCOUNT_EMAIL_REQUIRED = False       # 이메일 필드 필수 여부
+ACCOUNT_EMAIL_REQUIRED = True       # 이메일 필드 필수 여부
 ACCOUNT_AUTHENTICATION_METHOD = 'username'  # username으로 인증
-# dj-rest-auth 설정
+# dj-rest-auth 추가 설정
 REST_AUTH = {
     'USE_JWT': False,
     'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
-    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer','PATCH_METHOD': True,
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
+    'PATCH_METHOD': True,
+    'PASSWORD_RESET_USE_SITES_DOMAIN': True,
+    'OLD_PASSWORD_FIELD_ENABLED': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'http://localhost:5173/password-reset/{uid}/{token}',
+}
+
+
+# 추가 URL 설정
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'dj_rest_auth.serializers.PasswordResetSerializer',
 }
 
 # django-allauth 설정
@@ -180,3 +192,12 @@ FIN_KEY = 'c623c1eba8c43059b3039604c3c0c5ee'
 
 # 환율정보 API 키 설정
 EXC_KEY = '49jaBC90qCAZhLcYuPHVxY4IioI2V98s'
+
+# 비밀번호 초기화용
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  콘솔창에 출력
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 메일로 전송
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'gunil099@gmail.com'
+EMAIL_HOST_PASSWORD = 'xfhlsqjwrrspxgbq'

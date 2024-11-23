@@ -14,6 +14,7 @@ import ArticleForm from '@/views/community/ArticleForm.vue';
 import ArticleDetail from '@/views/community/ArticleDetail.vue';
 import CartView from '@/views/CartView.vue';
 import ProductRecommendations from '@/views/ProductRecommendations.vue'
+import PasswordReset from '@/views/PasswordReset.vue';
 
 const routes = [
   {
@@ -93,6 +94,11 @@ const routes = [
     path: "/recommendations",
     name: "ProductRecommendations",
     component: ProductRecommendations,
+  },
+  {
+    path: '/password-reset/:uid/:token',
+    name: 'PasswordReset',
+    component: PasswordReset,
   },
     
 ];
