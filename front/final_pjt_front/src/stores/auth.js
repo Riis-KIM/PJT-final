@@ -83,6 +83,22 @@ export const useAuthStore = defineStore('auth', () => {
       });
   };
 
+  // 비밀번호 변경
+  const resetPassword = function(email) {
+    axios({
+      method: 'post',
+      url: '/accounts/password/reset/',
+      data: { email }
+    })
+      .then(() => {
+        alert('비밀번호 재설정 이메일이 발송되었습니다.')
+      })
+      .catch((err) => {
+        console.error(err)
+        alert('비밀번호 재설정 이메일 발송에 실패했습니다.')
+      })
+  }
+
   // 사용자 정보 조회
   const fetchUserInfo = function () {
     axios({
@@ -146,6 +162,7 @@ export const useAuthStore = defineStore('auth', () => {
     initializeToken,
     fetchUserInfo,
     updateUserInfo,
+    resetPassword,
   };
 }, {
   persist: {
