@@ -126,7 +126,7 @@ const formatDate = (dateString) => {
 // 게시글 삭제
 const deleteArticle = async () => {
   if (confirm('정말 삭제하시겠습니까?')) {
-    await articleStore.deleteArticle(route.params.id)
+    articleStore.deleteArticle(route.params.id)
     router.push({ name: 'community' })
   }
 }

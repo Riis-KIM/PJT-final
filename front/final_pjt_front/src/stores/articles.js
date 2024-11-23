@@ -94,7 +94,7 @@ const getArticle = function(articleId) {
       }
     })
       .then(() => {
-        articles.value = articles.value.filter(article => article.id !== articleId)
+        getArticles()
         alert('게시글이 삭제되었습니다.')
       })
       .catch((err) => {
