@@ -5,7 +5,7 @@ def create_site(apps, schema_editor):
     Site.objects.create(
         id=1,
         domain='localhost:5173',
-        name='금융상품 비교 서비스'
+        name='Seedly'
     )
 
 class Migration(migrations.Migration):
