@@ -1,37 +1,70 @@
 <template>
   <div class="container mt-5">
     <div class="card">
-      <!-- 게시글 내용 -->
+      <!-- 게시글 헤더 -->
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h3 class="card-title fw-bold">{{ articleStore.article?.title }}</h3>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- 작성자 -->
+          <span class="text-muted small">작성자: {{ articleStore.article?.username }}</span>
+          <div class="d-flex align-items-center">
+            <!-- 작성일 -->
+            <span class="me-3 text-muted small">작성일: {{ formatDate(articleStore.article?.created_at) }}</span>
+            <!-- 조회수/추천/댓글 -->
+            <span class="text-muted small">조회수: {{ articleStore.article?.views || 0 }}</span>
+            <span class="text-muted small ms-3">추천: {{ articleStore.article?.likes || 0 }}</span>
+            <span class="text-muted small ms-3">댓글: {{ articleStore.article?.comments?.length || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 게시글 본문 -->
       <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h2 class="card-title">{{ articleStore.article?.title }}</h2>
-          <small class="text-muted">작성자: {{ articleStore.article?.username }}</small>
-        </div>
         <p class="card-text">{{ articleStore.article?.content }}</p>
-        <div class="text-muted small mb-3">
-          작성일: {{ formatDate(articleStore.article?.created_at) }}
+
+        <!-- 좋아요 버튼 -->
+        <div class="text-center mb-4">
+          <button 
+            class="btn btn-outline-primary"
+            @click="toggleLike"
+          >
+            <i 
+              :class="liked ? 'bi bi-hand-thumbs-up-fill' : 'bi bi-hand-thumbs-up'"
+              class="me-1"
+            ></i>
+            좋아요
+          </button>
+          <span class="d-block mt-2">{{ articleStore.article?.likes || 0 }}명이 좋아합니다</span>
         </div>
-        
-        <!-- 수정/삭제 버튼 (작성자인 경우만 표시) -->
-        <div v-if="isAuthor" class="mb-4">
-          <button class="btn btn-warning me-2" @click="goToEdit">수정</button>
-          <button class="btn btn-danger" @click="deleteArticle">삭제</button>
+
+        <!-- 버튼 섹션 -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <!-- 목록 버튼 -->
+          <button class="btn btn-secondary" @click="goToList">목록</button>
+
+          <!-- 수정/삭제 버튼 (작성자인 경우만 표시) -->
+          <div v-if="isAuthor">
+            <button class="btn btn-warning me-2" @click="goToEdit">수정</button>
+            <button class="btn btn-danger" @click="deleteArticle">삭제</button>
+          </div>
         </div>
       </div>
 
       <!-- 댓글 섹션 -->
       <div class="card-footer">
         <h4>댓글 {{ articleStore.article?.comments?.length || 0 }}개</h4>
-        
+
         <!-- 댓글 작성 폼 -->
         <div class="mb-3">
-          <textarea 
-            v-model="commentContent" 
+          <textarea
+            v-model="commentContent"
             class="form-control"
             rows="3"
             placeholder="댓글을 입력하세요"
           ></textarea>
-          <button 
+          <button
             class="btn btn-primary mt-2"
             @click="submitComment"
           >
@@ -111,6 +144,7 @@ const authStore = useAuthStore()
 const commentContent = ref('')
 const editingCommentId = ref(null)
 const editingContent = ref('')
+const liked = ref(false) // 좋아요 상태 관리
 
 // 현재 사용자가 글 작성자인지 확인
 const isAuthor = computed(() => {
@@ -137,6 +171,17 @@ const goToEdit = () => {
     name: 'articleEdit', 
     params: { id: route.params.id }
   })
+}
+
+// 좋아요 버튼 동작
+const toggleLike = async () => {
+  if (!liked.value) {
+    await articleStore.likeArticle(route.params.id)
+    liked.value = true
+  } else {
+    await articleStore.unlikeArticle(route.params.id)
+    liked.value = false
+  }
 }
 
 // 댓글 작성
@@ -181,15 +226,38 @@ const updateComment = async (commentId) => {
   cancelEdit()
 }
 
+// 목록으로 이동
+const goToList = () => {
+  router.push({ name: 'community' })
+}
+
 // 컴포넌트 마운트 시 게시글 정보 가져오기
 onMounted(() => {
   articleStore.getArticle(route.params.id)
+  liked.value = articleStore.article?.liked_by_user || false // 초기 좋아요 상태 설정
 })
 </script>
 
 <style scoped>
 .card {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.text-muted.small {
+  font-size: 0.875rem;
+}
+
+.article-meta {
+  display: flex;
+  justify-content: end; /* 오른쪽 정렬 */
+  gap: 1rem;
 }
 
 .btn-sm {
@@ -197,7 +265,11 @@ onMounted(() => {
   font-size: 0.875rem;
 }
 
-.w-100 {
-  width: 100%;
+.d-flex.flex-column.align-items-center {
+  text-align: center;
+}
+
+.bi {
+  font-size: 1.25rem;
 }
 </style>

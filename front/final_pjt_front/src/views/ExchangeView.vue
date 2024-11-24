@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <!-- 결과 표시 -->
+      <!-- 계산 결과 -->
       <div v-if="result" class="mt-4">
         <div class="result-card p-4 shadow">
           <h3 class="result-text fw-bold mb-3 text-center">
@@ -63,6 +63,29 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- 주요 환율 정보 테이블 -->
+    <div class="major-currencies mt-4">
+      <h4 class="fw-bold mb-3">주요 국가 환율 정보 <small class="text-muted">(KRW 기준)</small></h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>통화명</th>
+            <th>매매기준율</th>
+            <th>살 때</th>
+            <th>팔 때</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="code in orderedCountryCodes" :key="code">
+            <td>{{ findCurrency(code)?.cur_nm || "정보 없음" }}</td>
+            <td>{{ findCurrency(code)?.deal_bas_r || "정보 없음" }}</td>
+            <td>{{ findCurrency(code)?.tts || "정보 없음" }}</td>
+            <td>{{ findCurrency(code)?.ttb || "정보 없음" }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -77,6 +100,22 @@ const toCurrency = ref(null);
 const amount = ref(0);
 const result = ref(null);
 
+// 주요 국가 코드 순서
+const orderedCountryCodes = [
+  "USD", // 미국
+  "JPY(100)", // 일본
+  "EUR", // 유럽연합
+  "CNH", // 중국
+  "GBP", // 영국
+  "AUD", // 호주
+  "CAD", // 캐나다
+  "NZD", // 뉴질랜드
+  "THB", // 태국
+  "HKD", // 홍콩
+  "IDR(100)", // 인도네시아
+  "SGD", // 싱가포르
+];
+
 // 환율 데이터 가져오기
 const fetchExchangeRates = () => {
   axios.get('http://127.0.0.1:8000/exchange/')
@@ -88,6 +127,9 @@ const fetchExchangeRates = () => {
     })
     .catch((err) => console.error('환율 데이터를 가져오는 중 오류 발생:', err));
 };
+
+// 특정 통화 코드로 데이터 찾기
+const findCurrency = (code) => currencies.value.find(currency => currency.cur_unit === code);
 
 // 환율 계산 함수
 const calculateExchange = () => {
@@ -122,7 +164,6 @@ onMounted(() => {
 /* 헤더 스타일 */
 .header-section {
   text-align: left;
-  padding-left: 0; /* 왼쪽 패딩 제거 */
 }
 
 .section-title {
@@ -140,12 +181,6 @@ onMounted(() => {
   border-radius: 15px;
   background: #f8f9fa;
   border: 1px solid #dee2e6;
-  margin-left: 0; /* 왼쪽 여백 제거 */
-}
-
-/* 폼 스타일 */
-.form-control-lg {
-  border-radius: 8px;
 }
 
 /* 결과 카드 */
@@ -161,18 +196,13 @@ onMounted(() => {
   color: #495057;
 }
 
-.result-card p {
-  font-size: 0.9rem;
+/* 테이블 스타일 */
+.table {
+  text-align: center;
 }
 
-/* 반응형 스타일 */
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
-
-  .exchange-card {
-    padding: 15px !important;
-  }
+.table th,
+.table td {
+  vertical-align: middle;
 }
 </style>
