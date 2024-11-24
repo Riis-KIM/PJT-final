@@ -129,81 +129,67 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-/* 섹션 스타일 */
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap');
+
+body {
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+}
+
 .section-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 2.2rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
   color: #343a40;
 }
 
 .section-subtitle {
-  font-size: 1rem;
-  color: #868e96;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  color: #6c757d;
 }
 
-/* 상품 유형 버튼 */
-.btn-product-type {
-  background-color: #e9ecef;
+.filter-section .form-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: #343a40;
-  border: 1px solid #ced4da;
-  border-radius: 30px;
-  padding: 10px 20px;
-  transition: all 0.3s ease-in-out;
 }
 
-.btn-product-type.active {
-  background-color: #495057;
-  color: white;
+#map {
+  height: 600px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.btn-product-type:hover {
-  background-color: #868e96;
-  color: white;
+.info-box {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 300px;
+  z-index: 1000;
+  font-family: 'Open Sans', sans-serif;
 }
 
-/* 추천 섹션 */
-.recommendation-section {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  padding: 20px;
-}
-
-/* 테이블 스타일 */
-.table {
-  text-align: center;
-}
-
-.table-header {
-  background-color: #e9ecef;
-  color: #495057;
-  font-weight: bold;
-}
-
-.table-row:hover {
-  background-color: #f1f3f5;
-}
-
-.rank-column {
-  font-weight: bold;
-  font-size: 1rem;
-  color: #495057;
-}
-
-/* 상품명 버튼 */
 .product-name {
+  color: #000;
   font-weight: bold;
-  color: #495057;
-  transition: color 0.3s;
 }
 
-.product-name:hover {
-  text-decoration: underline;
-  color: #212529;
+.btn-search {
+  height: 38px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.btn-search:hover {
+  background-color: #0056b3;
 }
 </style>

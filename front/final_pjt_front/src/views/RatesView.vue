@@ -182,37 +182,54 @@ const filteredData = computed(() => {
 
 // 정렬 함수
 const sortTable = (key) => {
-  sortKey.value = key === sortKey.value ? "" : key;
-  sortOrder.value = sortKey.value === key && sortOrder.value === 1 ? -1 : 1;
+  if (key === sortKey.value) {
+    // 같은 키를 다시 클릭하면 정렬 방향을 변경
+    sortOrder.value *= -1;
+  } else {
+    // 새로운 키로 정렬할 때는 오름차순으로 시작
+    sortKey.value = key;
+    sortOrder.value = 1;
+  }
 };
-
 onMounted(() => {
   fetchData();
 });
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap');
+
+body {
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+}
+
 .section-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 2.2rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
   color: #343a40;
 }
 
 .section-subtitle {
-  font-size: 1rem;
-  color: #868e96;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  color: #6c757d;
 }
 
 .btn-product-type {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
   background-color: #e9ecef;
   color: #343a40;
   border: 1px solid #ced4da;
   border-radius: 30px;
   padding: 10px 20px;
   height: 48px;
+  transition: all 0.3s ease-in-out;
 }
 
 .btn-product-type.active {
@@ -232,8 +249,8 @@ onMounted(() => {
 .clear-btn {
   position: absolute;
   top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
+  right: 40px;
+  transform: translateY(-2%);
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -255,12 +272,14 @@ onMounted(() => {
 
 .table {
   text-align: center;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .table-header {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
   background-color: #e9ecef;
   color: #495057;
-  font-weight: bold;
 }
 
 .table-row:hover {
@@ -268,7 +287,8 @@ onMounted(() => {
 }
 
 .product-name {
-  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
   color: #495057;
   transition: color 0.3s;
 }
@@ -276,5 +296,10 @@ onMounted(() => {
 .product-name:hover {
   text-decoration: underline;
   color: #212529;
+}
+
+.list-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
 }
 </style>
