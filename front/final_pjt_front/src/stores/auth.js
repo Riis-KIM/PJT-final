@@ -83,21 +83,35 @@ export const useAuthStore = defineStore('auth', () => {
       });
   };
 
-  // 비밀번호 변경
   const resetPassword = function(email) {
+    // 이메일 중복 확인 후 비밀번호 초기화 진행
     axios({
       method: 'post',
-      url: '/accounts/password/reset/',
+      url: '/accounts/custom/check-email/',
       data: { email }
     })
-      .then(() => {
-        alert('비밀번호 재설정 이메일이 발송되었습니다.')
+      .then((res) => {
+        if (!res.data.exists) {
+          alert('등록되지 않은 이메일입니다.')
+          return
+        }
+        // 비밀번호 초기화 요청
+        axios({
+          method: 'post',
+          url: '/accounts/password/reset/',
+          data: { email }
+        })
+          .then(() => {
+            alert('비밀번호 재설정 이메일이 발송되었습니다.')
+          })
       })
       .catch((err) => {
         console.error(err)
-        alert('비밀번호 재설정 이메일 발송에 실패했습니다.')
+        alert('이메일 확인에 실패했습니다.')
       })
   }
+
+  
 
   // 사용자 정보 조회
   const fetchUserInfo = function () {
