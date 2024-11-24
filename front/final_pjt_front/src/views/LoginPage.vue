@@ -49,31 +49,31 @@
         계정이 없으신가요? <router-link to="/register" class="text-primary">회원가입</router-link>
       </p>
     </div>
+  </div>
 
     <!-- 비밀번호 초기화 모달 -->
-    <div v-if="showResetForm" class="modal-backdrop" @click.self="showResetForm = false">
-      <div class="modal-content">
-        <h3 class="mb-3">비밀번호 초기화</h3>
-        <p>가입한 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.</p>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-            <input 
-              type="email" 
-              class="form-control"
-              v-model="resetEmail"
-              placeholder="이메일 주소"
-            />
-          </div>
+  <div v-if="showResetForm" class="modal-backdrop" @click.self="showResetForm = false">
+    <div class="modal-content">
+      <h3 class="mb-3">비밀번호 초기화</h3>
+      <p>가입한 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.</p>
+      <div class="mb-3">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+          <input 
+            type="email" 
+            class="form-control"
+            v-model="resetEmail"
+            placeholder="이메일 주소"
+          />
         </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-primary flex-grow-1" @click="handlePasswordReset">
-            재설정 링크 받기
-          </button>
-          <button class="btn btn-secondary" @click="showResetForm = false">
-            취소
-          </button>
-        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary flex-grow-1" @click="handlePasswordReset">
+          재설정 링크 받기
+        </button>
+        <button class="btn btn-secondary" @click="showResetForm = false">
+          취소
+        </button>
       </div>
     </div>
   </div>

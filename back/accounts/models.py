@@ -9,7 +9,7 @@ from products.models import DepositProducts, SavingProducts
 class User(AbstractUser):
     username = models.CharField(max_length=30, unique=True) # 별명
     name = models.CharField(max_length=50)   # 이름
-    email = models.EmailField(max_length=100, blank=True, null=True)    # 이메일
+    email = models.EmailField(max_length=100, unique=True)    # 이메일
     age = models.IntegerField(blank=True,null=True,default=0)   # 나이
     money = models.IntegerField(blank=True, null=True)  # 자산
     joined_deposits = models.ManyToManyField(

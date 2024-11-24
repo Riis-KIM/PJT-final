@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ),
                 ("username", models.CharField(max_length=30, unique=True)),
                 ("name", models.CharField(max_length=50)),
-                ("email", models.EmailField(blank=True, max_length=100, null=True)),
+                ("email", models.EmailField(max_length=100, unique=True)),
                 ("age", models.IntegerField(blank=True, default=0, null=True)),
                 ("money", models.IntegerField(blank=True, null=True)),
                 (
