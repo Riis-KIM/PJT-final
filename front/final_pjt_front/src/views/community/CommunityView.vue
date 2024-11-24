@@ -20,12 +20,23 @@
         >
           <h3 class="article-title">{{ article.title }}</h3>
           <div class="article-meta">
+            <!-- 작성자 -->
             <span class="author">
               <i class="bi bi-person"></i> {{ article.username }}
             </span>
+            <!-- 댓글 수 -->
             <span class="comments">
               <i class="bi bi-chat"></i> {{ article.comment_count }}
             </span>
+            <!-- 조회수 -->
+            <span class="views">
+              <i class="bi bi-eye"></i> 조회수: {{ article.views || 0 }}
+            </span>
+            <!-- 좋아요 수 -->
+            <span class="likes">
+              <i class="bi bi-hand-thumbs-up"></i> 추천: {{ article.likes || 0 }}
+            </span>
+            <!-- 작성일 -->
             <span class="date">
               <i class="bi bi-calendar"></i> {{ formatDate(article.created_at) }}
             </span>
@@ -87,7 +98,7 @@ onMounted(() => {
 
 .community-container {
   font-family: 'Noto Sans KR', sans-serif;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #ffffff;
@@ -161,6 +172,11 @@ onMounted(() => {
   gap: 1rem;
   font-size: 0.9rem;
   color: #6c757d;
+}
+
+.article-meta .views, 
+.article-meta .likes {
+  font-size: 0.9rem;
 }
 
 .login-prompt {
