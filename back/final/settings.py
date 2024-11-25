@@ -194,8 +194,8 @@ FIN_KEY = 'c623c1eba8c43059b3039604c3c0c5ee'
 EXC_KEY = '49jaBC90qCAZhLcYuPHVxY4IioI2V98s'
 
 # 비밀번호 초기화용
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  콘솔창에 출력
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 메일로 전송
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #콘솔창에 출력
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 메일로 전송
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

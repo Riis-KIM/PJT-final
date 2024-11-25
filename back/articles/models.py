@@ -11,6 +11,8 @@ class Article(models.Model):
     )
     title = models.CharField(max_length=100)
     content = models.TextField()
+    likes = models.IntegerField(default=0)   # 좋아요 수
+    views = models.IntegerField(default=0)   # 조회수
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

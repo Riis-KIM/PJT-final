@@ -46,6 +46,22 @@ def article_detail_update_delete(request, article_pk):
             return Response({'detail': '게시글이 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
         return Response({'detail': '권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
 
+# 좋아요 추가
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def article_like(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    article.likes += 1
+    article.save()
+    return Response({'likes': article.likes})
+# 조회수 추가
+@api_view(['POST'])
+def article_views(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    article.views += 1
+    article.save()
+    return Response({'views': article.views})
+
 # 댓글 생성 및 삭제
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])

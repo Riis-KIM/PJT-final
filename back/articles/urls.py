@@ -7,6 +7,8 @@ urlpatterns = [
     # 게시글 관련 URL
     path('', views.article_list_create, name='article_list_create'),
     path('<int:article_pk>/', views.article_detail_update_delete, name='article_detail_update_delete'),
+    path('<int:article_pk>/like/', views.article_like),
+    path('<int:article_pk>/views/', views.article_views),
     
     # 댓글 관련 URL
     path('<int:article_pk>/comments/', views.comment_create_delete, name='comment_create'),

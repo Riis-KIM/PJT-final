@@ -27,7 +27,32 @@ export const useArticleStore = defineStore('articles', () => {
       })
   }
 
-// stores/articles.js
+  // 좋아요 추가
+  const likeArticle = (articleId) => {
+    axios({
+      method: 'post',
+      url: `/articles/${articleId}/like/`,
+      headers: {
+        Authorization: `Token ${localStorage.getItem('token')}`
+      }
+    })
+      .then((res) => {
+        article.value.likes = res.data.likes
+      })
+  }
+
+  // 조회수 추가
+  const increaseViews = (articleId) => {
+    axios({
+      method: 'post',
+      url: `/articles/${articleId}/views/`
+    })
+      .then((res) => {
+        article.value.views = res.data.views
+      })
+  }
+
+// 게시글 조회
 const getArticle = function(articleId) {
   axios({
     method: 'get',
@@ -38,12 +63,14 @@ const getArticle = function(articleId) {
   })
     .then((res) => {
       article.value = res.data
+      increaseViews(articleId)
     })
     .catch((err) => {
       console.error(err)
       alert('게시글을 불러오는데 실패했습니다.')
     })
 }
+
   // 게시글 생성
   const createArticle = function(articleData) {
     axios({
@@ -179,5 +206,6 @@ const updateComment = function(articleId, commentId, commentData) {
     createComment,
     deleteComment,
     updateComment,
+    likeArticle,
   }
 })

@@ -13,7 +13,7 @@
             <!-- 작성일 -->
             <span class="me-3 text-muted small">작성일: {{ formatDate(articleStore.article?.created_at) }}</span>
             <!-- 조회수/추천/댓글 -->
-            <span class="text-muted small">조회수: {{ articleStore.article?.views || 0 }}</span>
+            <span class="text-muted small"><i class="bi bi-eye me-1"></i>조회수 {{ articleStore.article?.views || 0 }}</span>
             <span class="text-muted small ms-3">추천: {{ articleStore.article?.likes || 0 }}</span>
             <span class="text-muted small ms-3">댓글: {{ articleStore.article?.comments?.length || 0 }}</span>
           </div>
@@ -24,19 +24,16 @@
       <div class="card-body">
         <p class="card-text">{{ articleStore.article?.content }}</p>
 
-        <!-- 좋아요 버튼 -->
+        <!-- 좋아요 버튼 수정 -->
         <div class="text-center mb-4">
           <button 
             class="btn btn-outline-primary"
-            @click="toggleLike"
+            @click="handleLike"
+            :disabled="!authStore.isAuthenticated"
           >
-            <i 
-              :class="liked ? 'bi bi-hand-thumbs-up-fill' : 'bi bi-hand-thumbs-up'"
-              class="me-1"
-            ></i>
-            좋아요
+            <i class="bi bi-hand-thumbs-up me-1"></i>
+            좋아요 {{ articleStore.article?.likes || 0 }}
           </button>
-          <span class="d-block mt-2">{{ articleStore.article?.likes || 0 }}명이 좋아합니다</span>
         </div>
 
         <!-- 버튼 섹션 -->
@@ -174,14 +171,12 @@ const goToEdit = () => {
 }
 
 // 좋아요 버튼 동작
-const toggleLike = async () => {
-  if (!liked.value) {
-    await articleStore.likeArticle(route.params.id)
-    liked.value = true
-  } else {
-    await articleStore.unlikeArticle(route.params.id)
-    liked.value = false
+const handleLike = () => {
+  if (!authStore.isAuthenticated) {
+    alert('로그인이 필요한 기능입니다.')
+    return
   }
+  articleStore.likeArticle(route.params.id)
 }
 
 // 댓글 작성
@@ -234,7 +229,6 @@ const goToList = () => {
 // 컴포넌트 마운트 시 게시글 정보 가져오기
 onMounted(() => {
   articleStore.getArticle(route.params.id)
-  liked.value = articleStore.article?.liked_by_user || false // 초기 좋아요 상태 설정
 })
 </script>
 

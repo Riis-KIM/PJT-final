@@ -14,6 +14,7 @@ class CommentSerializer(serializers.ModelSerializer):
             'username',
             'created_at',
         )
+
 # 글, 목록용
 class ArticleListSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
@@ -26,8 +27,11 @@ class ArticleListSerializer(serializers.ModelSerializer):
             'title',
             'username',
             'comment_count',
+            'likes',
+            'views',
             'created_at',
         )
+
 # 글, 상세정보용
 class ArticleSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
@@ -41,7 +45,9 @@ class ArticleSerializer(serializers.ModelSerializer):
             'content',
             'username',
             'comments',
+            'likes',
+            'views',
             'created_at',
             'updated_at',
         )
-        read_only_fields = ('user',)
+        read_only_fields = ('user', 'likes', 'views')
