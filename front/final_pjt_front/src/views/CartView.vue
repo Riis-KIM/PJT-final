@@ -90,7 +90,9 @@
     <!-- 그래프 보기 -->
     <div v-else class="graph-container">
       <h2 class="fw-bold text-center text-dark mb-4">가입 상품 금리 비교</h2>
-      <canvas ref="graphCanvas"></canvas>
+      <div class="chart-wrapper">
+        <canvas ref="graphCanvas"></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -115,17 +117,59 @@ const viewMode = ref("list");
 const chartInstance = ref(null);
 const graphCanvas = ref(null);
 
-const fetchCart = () => {
-  const token = localStorage.getItem("token");
-  axios
-    .get("/accounts/custom/myproducts/", {
+const fetchCart = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("/accounts/custom/myproducts/", {
       headers: { Authorization: `Token ${token}` },
-    })
-    .then((response) => {
-      cart.value = response.data;
-    })
-    .catch((error) => console.error("Error fetching cart:", error));
+    });
+    cart.value = response.data; // 서버에서 최신 데이터를 가져와 업데이트
+  } catch (error) {
+    console.error("데이터 로드 실패:", error);
+  }
 };
+
+
+const removeDeposit = async (finPrdtCd) => {
+  const isConfirmed = window.confirm("정말 이 예금 상품을 삭제하시겠습니까?");
+  if (!isConfirmed) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    // 서버에 삭제 요청
+    await axios.delete(`/accounts/custom/myproducts/${finPrdtCd}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    console.log("예금 상품 삭제 성공");
+
+    // 서버에서 최신 데이터 다시 가져오기
+    await fetchCart();
+  } catch (error) {
+    console.error("예금 삭제 실패:", error);
+    alert("삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+  }
+};
+
+const removeSaving = async (finPrdtCd) => {
+  const isConfirmed = window.confirm("정말 이 적금 상품을 삭제하시겠습니까?");
+  if (!isConfirmed) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    // 서버에 삭제 요청
+    await axios.delete(`/accounts/custom/myproducts/${finPrdtCd}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    console.log("적금 상품 삭제 성공");
+
+    // 서버에서 최신 데이터 다시 가져오기
+    await fetchCart();
+  } catch (error) {
+    console.error("적금 삭제 실패:", error);
+    alert("삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+  }
+};
+
 
 const getMaxRate = (options) => {
   const rates =
@@ -164,14 +208,14 @@ const renderGraph = async () => {
         {
           label: "저축 금리",
           data: [...depositBasicRates, ...savingBasicRates],
-          backgroundColor: "rgba(75, 192, 192, 0.8)", // 초록색
+          backgroundColor: "rgba(75, 192, 192, 0.8)",
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
         },
         {
           label: "최고 금리",
           data: [...depositMaxRates, ...savingMaxRates],
-          backgroundColor: "rgba(54, 162, 235, 0.8)", // 파란색
+          backgroundColor: "rgba(54, 162, 235, 0.8)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
@@ -184,53 +228,14 @@ const renderGraph = async () => {
         legend: {
           display: true,
           position: "top",
-          labels: {
-            font: {
-              size: 14,
-              family: "'Arial', sans-serif",
-            },
-            color: "#333",
-          },
         },
         tooltip: {
           enabled: true,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          titleFont: {
-            size: 16,
-            weight: "bold",
-          },
-          bodyFont: {
-            size: 14,
-          },
         },
       },
       scales: {
-        x: {
-          grid: {
-            display: false,
-          },
-          ticks: {
-            font: {
-              size: 12,
-              family: "'Arial', sans-serif",
-            },
-            color: "#333",
-          },
-        },
-        y: {
-          grid: {
-            color: "rgba(200, 200, 200, 0.5)",
-          },
-          ticks: {
-            font: {
-              size: 12,
-              family: "'Arial', sans-serif",
-            },
-            color: "#333",
-            stepSize: 1,
-          },
-          beginAtZero: true,
-        },
+        x: { grid: { display: false } },
+        y: { beginAtZero: true },
       },
     },
   });
@@ -248,29 +253,23 @@ onMounted(() => {
 <style scoped>
 .graph-container {
   position: relative;
-  height: 400px; /* 그래프 높이 */
-  width: 90%; /* 그래프 너비를 90%로 조정 */
-  margin: 0 auto; /* 가운데 정렬 */
-  background: #f9f9f9; /* 밝은 배경색 */
+  height: 600px; /* 높이 확장 */
+  width: 1500px; /* 너비 확장 */
+  margin: 0 auto;
+  background: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
+.chart-wrapper {
+  overflow-x: auto;
+}
+
 canvas {
   display: block;
+  width: 1400px; /* 캔버스와 컨테이너 크기 동기화 */
+  height: 500px;
   margin: auto;
-}
-
-.table {
-  text-align: center;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-h2 {
-  color: #000; /* 검은색으로 변경 */
 }
 </style>
