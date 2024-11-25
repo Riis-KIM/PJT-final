@@ -195,7 +195,7 @@ FIN_KEY = 'c623c1eba8c43059b3039604c3c0c5ee'
 EXC_KEY = '49jaBC90qCAZhLcYuPHVxY4IioI2V98s'
 
 # openAI API 키 설정
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = ''
 
 # 비밀번호 초기화용
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #콘솔창에 출력
