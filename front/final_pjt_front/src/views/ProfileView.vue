@@ -4,146 +4,149 @@
       <h2 class="mb-4">내 정보</h2>
       
       <div v-if="authStore.user">
-        <div class="mb-3">
-          <label class="form-label">사용자 이름</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            v-model="userInfo.username" 
-            readonly
-          />
+        <!-- 프로필 보기 모드 -->
+        <div v-if="!isEditing && !showPasswordForm">
+          <div class="info-row mb-3">
+            <label class="form-label">사용자 이름</label>
+            <p class="form-control-static">{{ computedUserInfo.username }}</p>
+          </div>
+
+          <div class="info-row mb-3">
+            <label class="form-label">이름</label>
+            <p class="form-control-static">{{ computedUserInfo.name || '미설정' }}</p>
+          </div>
+
+          <div class="info-row mb-3">
+            <label class="form-label">이메일</label>
+            <p class="form-control-static">{{ computedUserInfo.email || '미설정' }}</p>
+          </div>
+
+          <div class="info-row mb-3">
+            <label class="form-label">나이</label>
+            <p class="form-control-static">{{ computedUserInfo.age || '0' }} 살</p>
+          </div>
+
+          <div class="info-row mb-3">
+            <label class="form-label">자산</label>
+            <p class="form-control-static">{{ computedUserInfo.money || '0' }} 원</p>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary mb-3" @click="isEditing = true">
+              정보 수정하기
+            </button>
+            <button class="btn btn-secondary" @click="showPasswordForm = true">
+              비밀번호 변경
+            </button>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">이름</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            v-model="userInfo.name"
-          />
+        <!-- 정보 수정 모드 -->
+        <div v-if="isEditing">
+          <div class="mb-3">
+            <label class="form-label">이름</label>
+            <input type="text" class="form-control" v-model="editUserInfo.name" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">이메일</label>
+            <input type="email" class="form-control" v-model="editUserInfo.email" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">나이</label>
+            <input type="number" class="form-control" v-model="editUserInfo.age" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">자산</label>
+            <input type="number" class="form-control" v-model="editUserInfo.money" />
+          </div>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-success mb-2" @click="saveChanges">
+              저장하기
+            </button>
+            <button class="btn btn-secondary" @click="cancelEdit">
+              취소
+            </button>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">이메일</label>
-          <input 
-            type="email" 
-            class="form-control" 
-            v-model="userInfo.email"
-          />
-        </div>
+        <!-- 비밀번호 변경 모드 -->
+        <div v-if="showPasswordForm">
 
-        <div class="mb-3">
-          <label class="form-label">나이</label>
-          <input 
-            type="number" 
-            class="form-control" 
-            v-model="userInfo.age"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">자산</label>
-          <input 
-            type="number" 
-            class="form-control" 
-            v-model="userInfo.money"
-          />
-        </div>
-
-        <div class="d-grid gap-2">
-          <button 
-            class="btn btn-primary mb-3" 
-            @click="updateProfile"
-          >
-            정보 수정
-          </button>
-          <button 
-            class="btn btn-secondary" 
-            @click="showPasswordForm = !showPasswordForm"
-          >
-            비밀번호 변경
-          </button>
-        </div>
-
-        <!-- 비밀번호 변경 폼 -->
-        <div v-if="showPasswordForm" class="mt-4 border-top pt-4">
-          <h3 class="mb-3">비밀번호 변경</h3>
           <div class="mb-3">
             <label class="form-label">현재 비밀번호</label>
-            <input 
-              type="password" 
-              class="form-control"
-              v-model="passwordData.old_password"
-            />
+            <input type="password" class="form-control" v-model="passwordData.old_password" />
           </div>
+
           <div class="mb-3">
             <label class="form-label">새 비밀번호</label>
-            <input 
-              type="password" 
-              class="form-control"
-              v-model="passwordData.new_password1"
-            />
+            <input type="password" class="form-control" v-model="passwordData.new_password1" />
           </div>
+
           <div class="mb-3">
             <label class="form-label">새 비밀번호 확인</label>
-            <input 
-              type="password" 
-              class="form-control"
-              v-model="passwordData.new_password2"
-            />
+            <input type="password" class="form-control" v-model="passwordData.new_password2" />
           </div>
-          <button 
-            class="btn btn-primary"
-            @click="changePassword"
-          >
-            비밀번호 변경
-          </button>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-success" @click="handlePasswordChange">
+              변경하기
+            </button>
+            <button class="btn btn-secondary" @click="cancelPasswordChange">
+              취소
+            </button>
+          </div>
         </div>
-      </div>
-      
-      <div v-else>
-        <p>사용자 정보를 불러오는 중...</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import axios from 'axios'
 
 const authStore = useAuthStore()
-const userInfo = ref({
-  username: '',
-  name: '',
-  email: '',
-  age: 0,
-  money: 0
-})
-
+const isEditing = ref(false)
 const showPasswordForm = ref(false)
+
+// 현재 사용자 정보를 computed로 관리
+const computedUserInfo = computed(() => authStore.user || {})
+
+// 수정용 사용자 정보
+const editUserInfo = ref({})
+
+// 비밀번호 변경 데이터
 const passwordData = ref({
   old_password: '',
   new_password1: '',
   new_password2: ''
 })
 
-watch(() => authStore.user, (newUser) => {
-  if (newUser) {
-    userInfo.value = { ...newUser }
-  }
-}, { immediate: true })
-
-const getUserInfo = () => {
-  authStore.fetchUserInfo()
+// 수정 모드 시작 시 현재 정보 복사
+const startEdit = () => {
+  editUserInfo.value = { ...computedUserInfo.value }
+  isEditing.value = true
 }
 
-const updateProfile = () => {
-  authStore.updateUserInfo(userInfo.value)
+// 변경사항 저장
+const saveChanges = async () => {
+  await authStore.updateUserInfo(editUserInfo.value)
+  isEditing.value = false
 }
 
-const changePassword = () => {
+// 수정 취소
+const cancelEdit = () => {
+  editUserInfo.value = { ...computedUserInfo.value }
+  isEditing.value = false
+}
+
+// 비밀번호 변경 처리
+const handlePasswordChange = () => {
   if (passwordData.value.new_password1 !== passwordData.value.new_password2) {
     alert('새 비밀번호가 일치하지 않습니다')
     return
@@ -159,12 +162,7 @@ const changePassword = () => {
   })
     .then(() => {
       alert('비밀번호가 성공적으로 변경되었습니다.')
-      passwordData.value = {
-        old_password: '',
-        new_password1: '',
-        new_password2: ''
-      }
-      showPasswordForm.value = false
+      cancelPasswordChange()
     })
     .catch((err) => {
       console.error(err)
@@ -172,11 +170,15 @@ const changePassword = () => {
     })
 }
 
-onMounted(() => {
-  if (authStore.token) {
-    getUserInfo()
+// 비밀번호 변경 취소
+const cancelPasswordChange = () => {
+  passwordData.value = {
+    old_password: '',
+    new_password1: '',
+    new_password2: ''
   }
-})
+  showPasswordForm.value = false
+}
 </script>
 
 <style scoped>
@@ -186,7 +188,13 @@ onMounted(() => {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.form-control:read-only {
-  background-color: #f8f9fa;
+.info-row {
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+}
+
+.form-control-static {
+  margin-bottom: 0;
+  padding: 7px 0;
 }
 </style>
