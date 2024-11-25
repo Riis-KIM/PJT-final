@@ -22,15 +22,16 @@
 
     <!-- 리스트 보기 -->
     <div v-if="viewMode === 'list'">
+      <!-- 예금 목록 -->
       <div v-if="cart?.joined_deposits?.length" class="mb-5">
         <h2 class="fw-bold text-center">예금 목록</h2>
         <table class="table table-striped table-hover mt-3">
           <thead>
             <tr>
-              <th class="text-center">금융회사명</th>
-              <th class="text-center">상품명</th>
-              <th class="text-center text-success">최고금리</th>
-              <th class="text-center">삭제</th>
+              <th class="text-center" style="width: 25%;">금융회사명</th>
+              <th class="text-center" style="width: 40%;">상품명</th>
+              <th class="text-center text-success" style="width: 20%;">최고금리</th>
+              <th class="text-center" style="width: 15%;">삭제</th>
             </tr>
           </thead>
           <tbody>
@@ -53,15 +54,16 @@
         </table>
       </div>
 
+      <!-- 적금 목록 -->
       <div v-if="cart?.joined_savings?.length">
         <h2 class="fw-bold text-center">적금 목록</h2>
         <table class="table table-striped table-hover mt-3">
           <thead>
             <tr>
-              <th class="text-center">금융회사명</th>
-              <th class="text-center">상품명</th>
-              <th class="text-center text-success">최고금리</th>
-              <th class="text-center">삭제</th>
+              <th class="text-center" style="width: 25%;">금융회사명</th>
+              <th class="text-center" style="width: 40%;">상품명</th>
+              <th class="text-center text-success" style="width: 20%;">최고금리</th>
+              <th class="text-center" style="width: 15%;">삭제</th>
             </tr>
           </thead>
           <tbody>
@@ -87,7 +89,7 @@
 
     <!-- 그래프 보기 -->
     <div v-else class="graph-container">
-      <h2 class="fw-bold text-center text-info mb-4">금융상품 최고 금리 비교</h2>
+      <h2 class="fw-bold text-center text-dark mb-4">가입 상품 금리 비교</h2>
       <canvas ref="graphCanvas"></canvas>
     </div>
   </div>
@@ -103,9 +105,10 @@ import {
   CategoryScale,
   LinearScale,
   Tooltip,
+  Legend,
 } from "chart.js";
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const cart = ref(null);
 const viewMode = ref("list");
@@ -138,13 +141,19 @@ const renderGraph = async () => {
   if (chartInstance.value) chartInstance.value.destroy();
 
   const depositLabels = cart.value?.joined_deposits?.map((item) => item.fin_prdt_nm) || [];
-  const depositData = cart.value?.joined_deposits?.map((item) =>
-    item.options ? Math.max(...item.options.map((opt) => opt.intr_rate || 0)) : 0
+  const depositBasicRates = cart.value?.joined_deposits?.map((item) =>
+    item.options ? Math.min(...item.options.map((opt) => opt.intr_rate || 0)) : 0
+  );
+  const depositMaxRates = cart.value?.joined_deposits?.map((item) =>
+    item.options ? Math.max(...item.options.map((opt) => opt.intr_rate2 || 0)) : 0
   );
 
   const savingLabels = cart.value?.joined_savings?.map((item) => item.fin_prdt_nm) || [];
-  const savingData = cart.value?.joined_savings?.map((item) =>
-    item.options ? Math.max(...item.options.map((opt) => opt.intr_rate || 0)) : 0
+  const savingBasicRates = cart.value?.joined_savings?.map((item) =>
+    item.options ? Math.min(...item.options.map((opt) => opt.intr_rate || 0)) : 0
+  );
+  const savingMaxRates = cart.value?.joined_savings?.map((item) =>
+    item.options ? Math.max(...item.options.map((opt) => opt.intr_rate2 || 0)) : 0
   );
 
   chartInstance.value = new Chart(ctx, {
@@ -153,9 +162,16 @@ const renderGraph = async () => {
       labels: [...depositLabels, ...savingLabels],
       datasets: [
         {
-          label: "최고 금리 (%)",
-          data: [...depositData, ...savingData],
-          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          label: "저축 금리",
+          data: [...depositBasicRates, ...savingBasicRates],
+          backgroundColor: "rgba(75, 192, 192, 0.8)", // 초록색
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        },
+        {
+          label: "최고 금리",
+          data: [...depositMaxRates, ...savingMaxRates],
+          backgroundColor: "rgba(54, 162, 235, 0.8)", // 파란색
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
         },
@@ -165,20 +181,55 @@ const renderGraph = async () => {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          labels: {
+            font: {
+              size: 14,
+              family: "'Arial', sans-serif",
+            },
+            color: "#333",
+          },
+        },
         tooltip: {
           enabled: true,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          titleFont: {
+            size: 16,
+            weight: "bold",
+          },
+          bodyFont: {
+            size: 14,
+          },
         },
       },
       scales: {
-        y: {
-          beginAtZero: true,
-        },
         x: {
-          ticks: {
-            maxRotation: 45,
-            minRotation: 0,
-            autoSkip: true,
+          grid: {
+            display: false,
           },
+          ticks: {
+            font: {
+              size: 12,
+              family: "'Arial', sans-serif",
+            },
+            color: "#333",
+          },
+        },
+        y: {
+          grid: {
+            color: "rgba(200, 200, 200, 0.5)",
+          },
+          ticks: {
+            font: {
+              size: 12,
+              family: "'Arial', sans-serif",
+            },
+            color: "#333",
+            stepSize: 1,
+          },
+          beginAtZero: true,
         },
       },
     },
@@ -197,9 +248,10 @@ onMounted(() => {
 <style scoped>
 .graph-container {
   position: relative;
-  height: 500px;
-  width: 100%;
-  background: #f9f9f9;
+  height: 400px; /* 그래프 높이 */
+  width: 90%; /* 그래프 너비를 90%로 조정 */
+  margin: 0 auto; /* 가운데 정렬 */
+  background: #f9f9f9; /* 밝은 배경색 */
   border-radius: 12px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -219,6 +271,6 @@ canvas {
 }
 
 h2 {
-  color: #343a40;
+  color: #000; /* 검은색으로 변경 */
 }
 </style>

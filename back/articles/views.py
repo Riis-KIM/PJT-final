@@ -12,7 +12,7 @@ from .serializers import ArticleListSerializer, ArticleSerializer, CommentSerial
 @permission_classes([IsAuthenticated])
 def article_list_create(request):
     if request.method == 'GET':
-        articles = Article.objects.all()
+        articles = Article.objects.all().order_by('-created_at')
         serializer = ArticleListSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
