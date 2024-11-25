@@ -15,6 +15,7 @@ import ArticleDetail from '@/views/community/ArticleDetail.vue';
 import CartView from '@/views/CartView.vue';
 import ProductRecommendations from '@/views/ProductRecommendations.vue'
 import PasswordReset from '@/views/PasswordReset.vue';
+import Chatbotview from '@/views/Chatbotview.vue';
 
 const routes = [
   {
@@ -99,6 +100,11 @@ const routes = [
     path: '/password-reset/:uid/:token',
     name: 'PasswordReset',
     component: PasswordReset,
+  },
+  {
+    path: '/chatbot/',
+    name: 'chatbot',
+    component: Chatbotview,
   },
     
 ];

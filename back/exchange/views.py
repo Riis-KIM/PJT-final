@@ -81,13 +81,13 @@ def get_market_data(request):
         # 데이터 가공
         market_data = {
             'kospi': {
-                'price': round(kospi_data['Close'][-1], 2),
-                'change': round(((kospi_data['Close'][-1] - kospi_data['Close'][-2]) / kospi_data['Close'][-2] * 100), 2),
+                'price': round(kospi_data['Close'].iloc[-1], 2),
+                'change': round(((kospi_data['Close'].iloc[-1] - kospi_data['Close'].iloc[-2]) / kospi_data['Close'].iloc[-2] * 100), 2),
                 'last_1_month': kospi_data['Close'].tolist()
             },
             'nasdaq': {
-                'price': round(nasdaq_data['Close'][-1], 2),
-                'change': round(((nasdaq_data['Close'][-1] - nasdaq_data['Close'][-2]) / nasdaq_data['Close'][-2] * 100), 2),
+                'price': round(nasdaq_data['Close'].iloc[-1], 2),
+                'change': round(((nasdaq_data['Close'].iloc[-1] - nasdaq_data['Close'].iloc[-2]) / nasdaq_data['Close'].iloc[-2] * 100), 2),
                 'last_1_month': nasdaq_data['Close'].tolist()
             }
         }
