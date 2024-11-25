@@ -6,6 +6,15 @@
       <div v-if="authStore.user">
         <!-- 프로필 보기 모드 -->
         <div v-if="!isEditing && !showPasswordForm">
+          <div class="profile-image-section text-center mb-4">
+            <div class="profile-image-container">
+              <img 
+                src="@/assets/images/saessak.png" 
+                alt="프로필" 
+                class="profile-image"
+              />
+            </div>
+          </div>
           <div class="info-row mb-3">
             <label class="form-label">사용자 이름</label>
             <p class="form-control-static">{{ computedUserInfo.username }}</p>
@@ -13,7 +22,7 @@
 
           <div class="info-row mb-3">
             <label class="form-label">이름</label>
-            <p class="form-control-static">{{ computedUserInfo.name || '미설정' }}</p>
+            <p class="form-control-static">{{ computedUserInfo.name || '새싹' }}</p>
           </div>
 
           <div class="info-row mb-3">
@@ -196,5 +205,21 @@ const cancelPasswordChange = () => {
 .form-control-static {
   margin-bottom: 0;
   padding: 7px 0;
+}
+
+.profile-image-container {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-image {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
 }
 </style>
