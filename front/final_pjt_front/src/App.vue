@@ -33,19 +33,4 @@ body {
   margin: 0;
   font-family: 'Arial', sans-serif;
 }
-.profile-image-container {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 </style>

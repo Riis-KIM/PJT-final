@@ -10,18 +10,18 @@
       <button class="btn btn-primary btn-lg mt-3">추천 상품 보러가기</button>
     </div>
   </div>
+  <FinanceChart />
 </template>
 
-<script>
-export default {
-  name: "HomeView",
-  methods: {
-    goToRecommendations() {
-      // 추천 상품 페이지로 이동
-      this.$router.push({ name: "ProductRecommendations" });
-    },
-  },
-};
+<script setup>
+import { useRouter } from 'vue-router'
+import FinanceChart from '@/components/FinanceChart.vue'
+
+const router = useRouter()
+
+const goToRecommendations = () => {
+  router.push({ name: "ProductRecommendations" })
+}
 </script>
 
 <style scoped>
