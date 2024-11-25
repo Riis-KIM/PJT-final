@@ -2,10 +2,10 @@
   <div>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
+        
         <!-- 로고 -->
         <router-link to="/" class="navbar-brand d-flex align-items-center">
-          <img src="@/assets/images/logo.webp" alt="로고" class="logo-image me-2" />
-          <span class="brand-name">Seedly</span>
+          <img src="@/assets/images/download-rewmrkrf378uz87tgbc53ehj4e-removebg-preview.png" alt="로고" class="logo-image me-3" />
         </router-link>
 
         <!-- 모바일 토글 버튼 -->
@@ -49,7 +49,7 @@
             <router-link to="/cart" class="me-3 text-dark">
               <i class="bi bi-cart fs-5"></i>
             </router-link>
-            <button class="btn btn-outline-primary ms-3" @click="handleAuth">
+            <button class="btn btn-outline-primary ms-3 btn-hover-effect" @click="handleAuth">
               {{ isLoggedIn ? "로그아웃" : "로그인" }}
             </button>
           </div>
@@ -90,8 +90,9 @@ const handleAuth = () => {
 
 /* 로고 이미지 */
 .logo-image {
-  height: 50px;
+  height: 70px; /* 로고 크기 증가 */
   width: auto;
+  margin-right: 1rem; /* 메뉴와 간격 조정 */
 }
 
 .brand-name {
@@ -128,6 +129,29 @@ const handleAuth = () => {
 
 .btn-outline-primary {
   font-weight: 600;
+  position: relative;
+  z-index: 1; /* 나뭇잎 효과 위에 글씨 */
+  overflow: hidden; /* 배경 이미지가 버튼 안에만 표시되도록 */
+}
+
+.btn-hover-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/src/assets/images/Lovepik_com-401343102-leaves.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  z-index: -1; /* 버튼 텍스트 아래 */
+  transition: opacity 0.3s ease;
+}
+
+.btn-hover-effect:hover::after {
+  opacity: 0.4; /* 나뭇잎 투명도 조정 */
 }
 
 .navbar-toggler-icon {
