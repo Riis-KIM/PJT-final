@@ -147,10 +147,38 @@ const fetchData = async () => {
   }
 };
 
-// 상품 상세 페이지로 이동
 const goToDetail = (item) => {
-  productStore.setProduct(item);
-  router.push({ name: "DetailProduct", params: { id: item.fin_prdt_cd, type: productType.value } });
+  // 조회수 증가 API 호출
+  axios({
+    method: 'put',
+    url: `/api/v1/${productType.value}s/${item.fin_prdt_cd}/popularity/`,
+    data: { click: true },
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`
+    }
+  })
+    .then(() => {
+      productStore.setProduct(item);
+      // 예금/적금 타입에 따라 다른 라우트로 이동
+      router.push({ 
+        name: "DetailProduct", 
+        params: { 
+          id: item.fin_prdt_cd, 
+          type: productType.value 
+        } 
+      });
+    })
+    .catch((error) => {
+      console.error('인기도 업데이트 실패:', error);
+      // 에러가 발생해도 상세 페이지로는 이동
+      router.push({ 
+        name: "DetailProduct", 
+        params: { 
+          id: item.fin_prdt_cd, 
+          type: productType.value 
+        } 
+      });
+    });
 };
 
 // 필터링된 데이터
