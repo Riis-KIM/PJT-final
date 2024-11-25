@@ -14,7 +14,7 @@
             <span class="me-3 text-muted small">작성일: {{ formatDate(articleStore.article?.created_at) }}</span>
             <!-- 조회수/추천/댓글 -->
             <span class="text-muted small"><i class="bi bi-eye me-1"></i>조회수 {{ articleStore.article?.views || 0 }}</span>
-            <span class="text-muted small ms-3">추천: {{ articleStore.article?.likes || 0 }}</span>
+            <span class="text-muted small ms-3">추천: {{ articleStore.article?.like_count || 0 }}</span>
             <span class="text-muted small ms-3">댓글: {{ articleStore.article?.comments?.length || 0 }}</span>
           </div>
         </div>
@@ -31,8 +31,11 @@
             @click="handleLike"
             :disabled="!authStore.isAuthenticated"
           >
-            <i class="bi bi-hand-thumbs-up me-1"></i>
-            좋아요 {{ articleStore.article?.likes || 0 }}
+            <i 
+              :class="articleStore.article?.is_liked ? 'bi bi-heart-fill' : 'bi bi-heart'"
+              class="me-1"
+            ></i>
+            좋아요 {{ articleStore.article?.like_count || 0 }}
           </button>
         </div>
 

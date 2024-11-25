@@ -37,7 +37,9 @@ export const useArticleStore = defineStore('articles', () => {
       }
     })
       .then((res) => {
-        article.value.likes = res.data.likes
+        // 응답으로 받은 좋아요 수와 상태로 업데이트
+        article.value.like_count = res.data.like_count
+        article.value.is_liked = res.data.is_liked
       })
   }
 

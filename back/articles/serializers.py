@@ -19,6 +19,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleListSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     comment_count = serializers.IntegerField(source='comments.count', read_only=True)
+    like_count = serializers.IntegerField(source='like_users.count', read_only=True)
     
     class Meta:
         model = Article
@@ -27,7 +28,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
             'title',
             'username',
             'comment_count',
-            'likes',
+            'like_count',
             'views',
             'created_at',
         )
@@ -45,9 +46,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             'content',
             'username',
             'comments',
-            'likes',
             'views',
             'created_at',
             'updated_at',
         )
-        read_only_fields = ('user', 'likes', 'views')
+        read_only_fields = ('user', 'views')

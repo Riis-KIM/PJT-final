@@ -34,7 +34,7 @@
             </span>
             <!-- 좋아요 수 -->
             <span class="likes">
-              <i class="bi bi-hand-thumbs-up"></i> 추천: {{ article.likes || 0 }}
+              <i class="bi bi-hand-thumbs-up"></i> 추천: {{ article.like_count || 0 }}
             </span>
             <!-- 작성일 -->
             <span class="date">

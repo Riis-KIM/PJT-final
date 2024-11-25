@@ -30,7 +30,16 @@ def article_detail_update_delete(request, article_pk):
 
     if request.method == 'GET':
         serializer = ArticleSerializer(article)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = serializer.data
+        
+        # 좋아요 관련 데이터 추가
+        data['like_count'] = article.like_users.count()
+        if request.user.is_authenticated:
+            data['is_liked'] = article.like_users.filter(id=request.user.id).exists()
+        else:
+            data['is_liked'] = False
+            
+        return Response(data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT':
         if request.user == article.user:
@@ -51,9 +60,17 @@ def article_detail_update_delete(request, article_pk):
 @permission_classes([IsAuthenticated])
 def article_like(request, article_pk):
     article = Article.objects.get(pk=article_pk)
-    article.likes += 1
-    article.save()
-    return Response({'likes': article.likes})
+    if request.user in article.like_users.all():
+        article.like_users.remove(request.user)
+        is_liked = False
+    else:
+        article.like_users.add(request.user)
+        is_liked = True
+    return Response({
+        'is_liked': is_liked,
+        'like_count': article.like_users.count()
+    })
+
 # 조회수 추가
 @api_view(['POST'])
 def article_views(request, article_pk):
