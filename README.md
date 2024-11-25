@@ -30,7 +30,7 @@
 
 - 아래는 Seedly 프로젝트의 ERD 예시 이미지입니다. (링크는 추후 추가 예정)
 
-![ERD 예시](https://user-images.githubusercontent.com/example/ERD-example.png)
+![ERD](README_img/ERD.png)
 
 ---
 

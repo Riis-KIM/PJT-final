@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import NavBar from './components/NavBar.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -25,6 +25,7 @@ if (import.meta.env.DEV) {  // 개발 환경에서만 실행
 onBeforeMount(() => {
   authStore.initializeToken()  // 토큰 초기화만 실행
 })
+
 </script>
 
 <style>

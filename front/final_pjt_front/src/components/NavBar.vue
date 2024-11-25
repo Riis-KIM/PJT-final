@@ -39,6 +39,9 @@
             <li class="nav-item">
               <router-link to="/community" class="nav-link">커뮤니티</router-link>
             </li>
+            <li class="nav-item">
+              <router-link :to="{ name: 'chatbot' }" class="nav-link">챗봇</router-link>
+            </li>
           </ul>
 
           <!-- 오른쪽 메뉴 -->

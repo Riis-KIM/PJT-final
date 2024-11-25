@@ -16,4 +16,5 @@ urlpatterns = [
     ),
     path('exchange/', include('exchange.urls')),
     path('articles/', include('articles.urls')),
+    path('chat/', include('chat.urls'))
 ]

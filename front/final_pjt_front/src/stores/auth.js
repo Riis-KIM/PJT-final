@@ -144,6 +144,7 @@ export const useAuthStore = defineStore('auth', () => {
     })
       .then((response) => {
         user.value = response.data;
+        localStorage.setItem('user', JSON.stringify(response.data));
         alert('프로필이 성공적으로 업데이트되었습니다.');
       })
       .catch((err) => {
