@@ -237,7 +237,7 @@ onMounted(() => {
 
 <style scoped>
 .card {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 }
 
@@ -257,16 +257,79 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+/* 좋아요 버튼 */
+.btn-outline-primary {
+  background-color: white;
+  border: 1px solid #28a745; /* 초록색 테두리 */
+  color: #28a745; /* 초록색 텍스트 */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.d-flex.flex-column.align-items-center {
-  text-align: center;
+.btn-outline-primary:hover {
+  background-color: #28a745; /* 초록색 배경 */
+  color: white;
+  border-color: #218838; /* 더 진한 초록색 테두리 */
+}
+
+/* 목록 버튼 */
+.btn-secondary {
+  background-color: #343a40; /* 어두운 회색 배경 */
+  border: 1px solid #343a40; /* 어두운 회색 테두리 */
+  color: white; /* 흰색 텍스트 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #23272b; /* 더 어두운 회색 배경 */
+  border-color: #1d2124; /* 더 어두운 테두리 */
+  color: #e9ecef; /* 연한 회색 텍스트 */
+}
+
+/* 수정 버튼 */
+.btn-warning {
+  background-color: #0177c2; /* 파란색 배경 */
+  border: 1px solid #0177c2; /* 파란색 테두리 */
+  color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-warning:hover {
+  background-color: #0056b3; /* 더 진한 파란색 배경 */
+  border-color: #0056b3;
+}
+
+/* 댓글 작성 버튼 */
+.btn-primary {
+  background-color: #28a745; /* 초록색 배경 */
+  border: 1px solid #28a745; /* 초록색 테두리 */
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #218838; /* 더 진한 초록색 배경 */
+  border-color: #218838;
+}
+
+/* 삭제 버튼 */
+.btn-danger {
+  background-color: #c82333; /* 톤 다운된 빨간색 */
+  border: 1px solid #c82333;
+  color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #a71d2a; /* 더 진한 빨간색 */
+  border-color: #a71d2a;
+}
+
+textarea {
+  resize: vertical;
 }
 
 .bi {
   font-size: 1.25rem;
 }
+
 </style>
