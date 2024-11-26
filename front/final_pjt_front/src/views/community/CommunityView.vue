@@ -101,7 +101,7 @@ onMounted(() => {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: #f8f9f9; /* 연한 초록 배경 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
@@ -121,25 +121,28 @@ onMounted(() => {
 .page-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #28a745; /* 진한 초록색 제목 */
 }
 
 .btn-create {
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: white; /* 흰색 배경 */
+  color: #333; /* 검은색 글씨 */
+  border: 1px solid #ccc; /* 회색 테두리 추가 */
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-create:hover {
-  background-color: #0056b3;
+  background-color: #f0f0f0; /* 연한 회색 배경 */
+  color: #000; /* 더 진한 검은색 글씨 */
+  border-color: #999; /* 테두리도 더 진한 회색으로 변경 */
 }
+
 
 .article-list {
   display: flex;
@@ -150,7 +153,7 @@ onMounted(() => {
 .article-item {
   padding: 1rem;
   border-radius: 8px;
-  background-color: #f8f9fa;
+  background-color: #e9f7ef; /* 밝은 초록 배경 */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
@@ -163,7 +166,7 @@ onMounted(() => {
 .article-title {
   font-size: 1.2rem;
   font-weight: 500;
-  color: #333;
+  color: #333; /* 원래 진회색 */
   margin-bottom: 0.5rem;
 }
 
@@ -186,18 +189,18 @@ onMounted(() => {
 
 .large-icon {
   font-size: 3rem;
-  color: #6c757d;
+  color: #28a745; /* 초록 아이콘 */
   margin-bottom: 1rem;
 }
 
 .prompt-message {
   font-size: 1.2rem;
-  color: #333;
+  color: #28a745; /* 초록 메시지 */
   margin-bottom: 1.5rem;
 }
 
 .btn-login {
-  background-color: #28a745;
+  background-color: #28a745; /* 초록색 버튼 */
   color: white;
   border: none;
   padding: 0.5rem 1.5rem;
@@ -207,6 +210,7 @@ onMounted(() => {
 }
 
 .btn-login:hover {
-  background-color: #218838;
+  background-color: #218838; /* 어두운 초록색 호버 */
 }
+
 </style>
