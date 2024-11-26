@@ -92,7 +92,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
 
@@ -125,24 +125,46 @@ onMounted(() => {
 }
 
 .btn-create {
-  background-color: white; /* 흰색 배경 */
-  color: #333; /* 검은색 글씨 */
-  border: 1px solid #ccc; /* 회색 테두리 추가 */
+  position: relative;
+  background-color: white;
+  color: #28a745;
+  border: 1px solid #28a745;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  z-index: 1; /* 나뭇잎 효과 위에 글씨 */
+  overflow: hidden; /* 나뭇잎 배경이 링크 안에만 표시되도록 */
+}
+
+.btn-create::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("@/assets/images/Lovepik_com-401343102-leaves.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
 }
 
 .btn-create:hover {
-  background-color: #f0f0f0; /* 연한 회색 배경 */
-  color: #000; /* 더 진한 검은색 글씨 */
-  border-color: #999; /* 테두리도 더 진한 회색으로 변경 */
+  color: white;
+  background-color: #28a745;
 }
 
+.btn-create:hover::after {
+  opacity: 0.4;
+}
 
 .article-list {
   display: flex;

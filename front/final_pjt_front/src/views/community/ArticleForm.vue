@@ -119,11 +119,64 @@ const goBack = () => {
 
 <style scoped>
 .card {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc; /* 회색 테두리로 복원 */
+  border-radius: 8px;
+}
+
+.card-title {
+  color: #28a745; /* 초록색 제목 */
+  font-weight: bold;
 }
 
 textarea {
   resize: vertical;
   min-height: 200px;
+  border: 1px solid #ccc; /* 회색 테두리로 복원 */
+  border-radius: 5px;
 }
+
+textarea:focus {
+  outline: none;
+  border-color: #218838; /* 더 진한 초록색 포커스 */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* 초록색 포커스 효과 */
+}
+
+input {
+  border: 1px solid #ccc; /* 회색 테두리로 복원 */
+  border-radius: 5px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #218838; /* 더 진한 초록색 포커스 */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* 초록색 포커스 효과 */
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+  background-color: #28a745; /* 초록색 버튼 */
+  border: 1px solid #28a745; /* 초록색 테두리 */
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #218838; /* 더 진한 초록색 호버 */
+  border-color: #218838;
+}
+
+.btn-secondary {
+  background-color: white; /* 흰색 배경 */
+  border: 1px solid #28a745; /* 초록색 테두리 */
+  color: #28a745; /* 초록색 텍스트 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e9f7ef; /* 연한 초록색 배경 */
+  color: #218838; /* 더 진한 초록색 텍스트 */
+  border-color: #218838;
+}
+
 </style>
