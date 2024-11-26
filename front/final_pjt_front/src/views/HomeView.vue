@@ -69,7 +69,7 @@ const goToRecommendations = () => {
 .banner h2 {
   margin: 0;
   font-size: 1.8rem;
-  color: #007bff;
+  color: #28a745; /* 초록색으로 변경 */
   font-weight: bold;
 }
 
@@ -83,7 +83,7 @@ const goToRecommendations = () => {
 .btn-primary {
   font-size: 1.2rem;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #28a745; /* 초록색으로 변경 */
   border: none;
   border-radius: 10px;
   color: white;
@@ -92,6 +92,6 @@ const goToRecommendations = () => {
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #1e7e34;
 }
 </style>
