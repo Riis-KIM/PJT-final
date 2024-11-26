@@ -155,20 +155,42 @@ onUnmounted(() => {
 }
 
 /* 카드 스타일 */
+.container {
+  margin-top: 2rem;
+}
+
 .card {
   border-radius: 10px;
+  background-color: white; /* 연한 초록색 배경 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card-title {
   font-size: 1.75rem;
   font-weight: bold;
+  color: black; /* 메인 초록색 */
 }
 
 .card-text {
   font-size: 1.1rem;
+  color: #333;
 }
 
 .list-group-item {
   font-size: 1rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #28a745; /* 초록색 강조 */
+}
+
+.btn-primary {
+  background-color: #28a745; /* 메인 초록색 */
+  border: none;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-primary:hover {
+  background-color: #218838; /* 조금 더 짙은 초록색 */
+  transition: background-color 0.3s ease;
 }
 </style>
