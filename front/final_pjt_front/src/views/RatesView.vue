@@ -251,24 +251,28 @@ body {
 .btn-product-type {
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
-  background-color: #e9ecef;
-  color: #343a40;
-  border: 1px solid #ced4da;
+  background-color: white; /* 배경 흰색 */
+  color: #28a745; /* 글씨 초록색 */
+  border: 1px solid #28a745; /* 테두리 두께 1px로 변경 */
   border-radius: 30px;
-  padding: 10px 20px;
-  height: 48px;
+  padding: 8px 16px; /* 패딩 조정 */
+  height: 40px; /* 높이 조정 */
   transition: all 0.3s ease-in-out;
+  box-sizing: border-box; /* 크기 계산 포함 */
 }
 
 .btn-product-type.active {
-  background-color: #495057;
-  color: white;
+  background-color: #28a745; /* 활성화 상태 초록색 배경 */
+  color: white; /* 활성화 상태 글씨 흰색 */
+  border: 1px solid #28a745; /* 테두리 두께 유지 */
 }
 
 .btn-product-type:hover {
-  background-color: #868e96;
-  color: white;
+  background-color: #28a745; /* 호버 시 초록색 배경 */
+  color: white; /* 호버 시 글씨 흰색 */
 }
+
+
 
 .search-container {
   position: relative;

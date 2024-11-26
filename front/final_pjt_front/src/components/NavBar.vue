@@ -33,8 +33,8 @@
             <li class="nav-item">
               <router-link to="/exchange" class="nav-link">환율계산기</router-link>
             </li>
-            <li class="nav-item">
-              <router-link to="/map" class="nav-link">은행지도</router-link>
+            <li class="nav-item nav-map">
+              <router-link to="/map" class="nav-link btn-hover-effect">은행지도</router-link>
             </li>
             <li class="nav-item">
               <router-link to="/community" class="nav-link">커뮤니티</router-link>
@@ -115,7 +115,7 @@ const handleAuth = () => {
 }
 
 .nav-link:hover {
-  color: #007bff;
+  color: #28a745; /* 초록색으로 변경 */
   text-decoration: underline;
 }
 
@@ -127,7 +127,7 @@ const handleAuth = () => {
 }
 
 .bi:hover {
-  color: #007bff;
+  color: #28a745; /* 초록색으로 변경 */
 }
 
 .btn-outline-primary {
@@ -135,6 +135,14 @@ const handleAuth = () => {
   position: relative;
   z-index: 1; /* 나뭇잎 효과 위에 글씨 */
   overflow: hidden; /* 배경 이미지가 버튼 안에만 표시되도록 */
+  border-color: #28a745; /* 초록색 테두리 */
+  color: #28a745; /* 초록색 텍스트 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #28a745; /* 초록색 배경 */
+  color: white;
 }
 
 .btn-hover-effect::after {
@@ -158,6 +166,40 @@ const handleAuth = () => {
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%280,0,0,0.7%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%280,128,0,0.7%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); /* 초록색 토글 아이콘 */
+}
+
+/* 은행지도 링크에 나뭇잎 효과 추가 */
+.nav-map .btn-hover-effect {
+  position: relative;
+  z-index: 1; /* 나뭇잎 효과 위에 글씨 */
+  overflow: hidden; /* 나뭇잎 배경이 링크 안에만 표시되도록 */
+  color: #333; /* 기본 텍스트 색상 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-map .btn-hover-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/src/assets/images/Lovepik_com-401343102-leaves.png"); /* 나뭇잎 배경 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  z-index: -1; /* 텍스트 아래에 배치 */
+  transition: opacity 0.3s ease;
+}
+
+.nav-map .btn-hover-effect:hover {
+  color: #28a745; /* 호버 시 텍스트 색상 변경 */
+  background-color: white; /* 초록색 배경 추가 */
+}
+
+.nav-map .btn-hover-effect:hover::after {
+  opacity: 0.4; /* 나뭇잎 배경 투명도 조정 */
 }
 </style>

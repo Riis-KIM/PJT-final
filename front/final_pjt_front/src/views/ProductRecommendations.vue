@@ -213,22 +213,29 @@ body {
 .btn-product-type {
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
-  background-color: #e9ecef;
-  color: #343a40;
-  border: 1px solid #ced4da;
-  border-radius: 30px;
-  padding: 10px 20px;
-  height: 48px;
+  background-color: white; /* 배경 흰색 */
+  color: #28a745; /* 글씨 초록색 */
+  border: 1px solid #28a745; /* 테두리 초록색 (두께 1px) */
+  border-radius: 20px; /* 둥근 모서리 크기 */
+  padding: 8px 16px; /* 패딩 약간 확대 */
+  height: 40px; /* 높이 살짝 확대 */
+  font-size: 1rem; /* 글자 크기 확대 */
+  line-height: 1.3; /* 줄 간격 조정 */
   transition: all 0.3s ease-in-out;
+  box-sizing: border-box; /* 크기 계산 방식 설정 */
 }
 
 .btn-product-type.active {
-  background-color: #495057;
-  color: white;
+  background-color: #28a745; /* 활성화 상태 초록색 배경 */
+  color: white; /* 활성화 상태 글씨 흰색 */
+  border: 1px solid #28a745; /* 테두리 두께 유지 */
+  padding: 8px 16px; /* 패딩 동일 */
+  font-size: 1rem; /* 글자 크기 유지 */
 }
 
 .btn-product-type:hover {
-  background-color: #868e96;
-  color: white;
+  background-color: #28a745; /* 호버 시 초록색 배경 */
+  color: white; /* 호버 시 글씨 흰색 */
 }
+
 </style>
