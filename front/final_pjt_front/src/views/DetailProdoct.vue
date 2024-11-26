@@ -26,7 +26,7 @@
         <!-- 구매 목록에 추가 버튼 -->
         <div class="text-center mt-4">
           <button class="btn btn-primary btn-lg" @click="addToCart">
-            구매 목록에 추가
+            가입 목록에 추가
           </button>
         </div>
       </div>
