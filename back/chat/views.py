@@ -1,18 +1,21 @@
-# chat/views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
 import openai
 
+
 @api_view(['POST'])
 def chat_with_gpt(request):
     try:
-        # openai.api_key = settings.OPENAI_API_KEY
+        # OpenAI API 클라이언트 설정
         client = openai.Client(api_key=settings.OPENAI_API_KEY)
-        system_message = {
-                "role": "system",
-                "content": """당신은 금융 상품 추천 전문가입니다. 다음의 인기 예금/적금 상품 정보를 기반으로 상담해주세요:
 
+        # 시스템 메시지 정의
+        system_message = {
+            "role": "system",
+            "content": """
+                당신은 금융 상품 추천 전문가입니다. 다음의 인기 예금/적금 상품 정보를 기반으로 상담해주세요:
+                
                 【인기 예금 상품 TOP 5】
                 1. iM함께예금 (아이엠뱅크)
                 - 최소가입금액: 100만원
@@ -70,12 +73,16 @@ def chat_with_gpt(request):
                 2. 가입 가능 금액
                 3. 가입 기간
                 4. 우대혜택 충족 가능성
-                5. 온/오프라인 거래 선호도"""
-            }
+                5. 온/오프라인 거래 선호도
+                
+                답변 시 보기 좋게 줄바꿈을 잘해주세요.
+            """
+        }
 
+        # 클라이언트에서 받은 사용자 메시지
         user_message = request.data.get('message', '')
-        
-        # response = openai.ChatCompletion.create(
+
+        # GPT 모델 호출
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -116,10 +123,22 @@ def chat_with_gpt(request):
             temperature=0.7,
             max_tokens=1000
         )
-        
-        return Response({
-            'message': response.choices[0].message.content
-        })
+
+        # 응답 메시지 포맷팅: 줄바꿈을 <br> 태그로 변환
+        gpt_response = response.choices[0].message.content.replace("\n", "<br>")
+
+        # HTML 응답 포맷 추가
+        formatted_response = f"""
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            {gpt_response}
+        </div>
+        """
+
+        return Response({'message': formatted_response})
+
     except openai.BadRequestError as e:
         print(f"Bad request 오류: {str(e)}")
-        return Response({'error': str(e)}, status=500)
+        return Response({'error': '잘못된 요청입니다. 입력 내용을 확인해주세요.'}, status=400)
+    except Exception as e:
+        print(f"예기치 못한 오류: {str(e)}")
+        return Response({'error': '서버에서 문제가 발생했습니다. 잠시 후 다시 시도해주세요.'}, status=500)

@@ -5,14 +5,14 @@
     <!-- 보기 모드 버튼 -->
     <div class="d-flex justify-content-end mb-4 view-mode-buttons">
       <button
-        class="btn btn-outline-primary me-2 view-mode-btn"
+        class="btn btn-outline-green me-2"
         :class="{ active: viewMode === 'list' }"
         @click="viewMode = 'list'"
       >
         리스트로 보기
       </button>
       <button
-        class="btn btn-outline-primary view-mode-btn"
+        class="btn btn-outline-green"
         :class="{ active: viewMode === 'graph' }"
         @click="viewMode = 'graph'"
       >
@@ -24,26 +24,26 @@
     <div v-if="viewMode === 'list'">
       <!-- 예금 목록 -->
       <div v-if="cart?.joined_deposits?.length" class="mb-5">
-        <h2 class="fw-bold text-center">예금 목록</h2>
-        <table class="table table-striped table-hover mt-3">
+        <h2 class="fw-bold text-green text-center">예금 목록</h2>
+        <table class="table table-bordered mt-3 cute-table">
           <thead>
             <tr>
-              <th class="text-center" style="width: 25%;">금융회사명</th>
-              <th class="text-center" style="width: 40%;">상품명</th>
-              <th class="text-center text-success" style="width: 20%;">최고금리</th>
-              <th class="text-center" style="width: 15%;">삭제</th>
+              <th class="text-center">금융회사명</th>
+              <th class="text-center">상품명</th>
+              <th class="text-center text-green">최고금리</th>
+              <th class="text-center">삭제</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in cart.joined_deposits" :key="item.fin_prdt_cd">
               <td class="text-center">{{ item.kor_co_nm }}</td>
               <td class="text-center">{{ item.fin_prdt_nm }}</td>
-              <td class="text-center text-success fw-bold">
+              <td class="text-center text-green fw-bold">
                 {{ getMaxRate(item.options) }}%
               </td>
               <td class="text-center">
                 <button
-                  class="btn btn-danger btn-sm"
+                  class="btn btn-light btn-sm cute-delete-btn"
                   @click="removeDeposit(item.fin_prdt_cd)"
                 >
                   삭제
@@ -56,26 +56,26 @@
 
       <!-- 적금 목록 -->
       <div v-if="cart?.joined_savings?.length">
-        <h2 class="fw-bold text-center">적금 목록</h2>
-        <table class="table table-striped table-hover mt-3">
+        <h2 class="fw-bold text-green text-center">적금 목록</h2>
+        <table class="table table-bordered mt-3 cute-table">
           <thead>
             <tr>
-              <th class="text-center" style="width: 25%;">금융회사명</th>
-              <th class="text-center" style="width: 40%;">상품명</th>
-              <th class="text-center text-success" style="width: 20%;">최고금리</th>
-              <th class="text-center" style="width: 15%;">삭제</th>
+              <th class="text-center">금융회사명</th>
+              <th class="text-center">상품명</th>
+              <th class="text-center text-green">최고금리</th>
+              <th class="text-center">삭제</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in cart.joined_savings" :key="item.fin_prdt_cd">
               <td class="text-center">{{ item.kor_co_nm }}</td>
               <td class="text-center">{{ item.fin_prdt_nm }}</td>
-              <td class="text-center text-success fw-bold">
+              <td class="text-center text-green fw-bold">
                 {{ getMaxRate(item.options) }}%
               </td>
               <td class="text-center">
                 <button
-                  class="btn btn-danger btn-sm"
+                  class="btn btn-light btn-sm cute-delete-btn"
                   @click="removeSaving(item.fin_prdt_cd)"
                 >
                   삭제
@@ -89,7 +89,7 @@
 
     <!-- 그래프 보기 -->
     <div v-else class="graph-container">
-      <h2 class="fw-bold text-center text-dark mb-4">가입 상품 금리 비교</h2>
+      <h2 class="fw-bold text-green text-center mb-4">가입 상품 금리 비교</h2>
       <div class="chart-wrapper">
         <canvas ref="graphCanvas"></canvas>
       </div>
@@ -123,12 +123,11 @@ const fetchCart = async () => {
     const response = await axios.get("/accounts/custom/myproducts/", {
       headers: { Authorization: `Token ${token}` },
     });
-    cart.value = response.data; // 서버에서 최신 데이터를 가져와 업데이트
+    cart.value = response.data;
   } catch (error) {
     console.error("데이터 로드 실패:", error);
   }
 };
-
 
 const removeDeposit = async (fin_prdt_cd) => {
   const isConfirmed = window.confirm("정말 이 예금 상품을 삭제하시겠습니까?");
@@ -136,14 +135,10 @@ const removeDeposit = async (fin_prdt_cd) => {
 
   try {
     const token = localStorage.getItem("token");
-    // 서버에 삭제 요청
     await axios.post(`/api/v1/deposits/${fin_prdt_cd}/join/`, {}, {
       headers: { Authorization: `Token ${token}` },
     });
-    console.log("예금 상품 삭제 성공");
-    alert("삭제되었습니다")
-
-    // 서버에서 최신 데이터 다시 가져오기
+    alert("삭제되었습니다");
     await fetchCart();
   } catch (error) {
     console.error("예금 삭제 실패:", error);
@@ -157,20 +152,16 @@ const removeSaving = async (fin_prdt_cd) => {
 
   try {
     const token = localStorage.getItem("token");
-    // 서버에 삭제 요청
-    await axios.post(`/api/v1/savings/${fin_prdt_cd}/join/`, {},{
+    await axios.post(`/api/v1/savings/${fin_prdt_cd}/join/`, {}, {
       headers: { Authorization: `Token ${token}` },
     });
-    console.log("적금 상품 삭제 성공");
-    alert("삭제되었습니다")
-    // 서버에서 최신 데이터 다시 가져오기
+    alert("삭제되었습니다");
     await fetchCart();
   } catch (error) {
     console.error("적금 삭제 실패:", error);
     alert("삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
   }
 };
-
 
 const getMaxRate = (options) => {
   const rates =
@@ -209,15 +200,15 @@ const renderGraph = async () => {
         {
           label: "저축 금리",
           data: [...depositBasicRates, ...savingBasicRates],
-          backgroundColor: "rgba(75, 192, 192, 0.8)",
-          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(40, 167, 69, 0.8)",
+          borderColor: "rgba(40, 167, 69, 1)",
           borderWidth: 1,
         },
         {
           label: "최고 금리",
           data: [...depositMaxRates, ...savingMaxRates],
-          backgroundColor: "rgba(54, 162, 235, 0.8)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.8)",
+          borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
         },
       ],
@@ -226,13 +217,7 @@ const renderGraph = async () => {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          display: true,
-          position: "top",
-        },
-        tooltip: {
-          enabled: true,
-        },
+        legend: { position: "top" },
       },
       scales: {
         x: { grid: { display: false } },
@@ -252,6 +237,48 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.text-green {
+  color: #28a745;
+}
+
+.btn-outline-green {
+  border: 1px solid #28a745;
+  color: #28a745;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-green.active,
+.btn-outline-green:hover {
+  background: #28a745;
+  color: white;
+}
+
+.cute-delete-btn {
+  border-radius: 8px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.cute-delete-btn:hover {
+  background: #ffc9c9;
+  color: #721c24;
+}
+
+.cute-table th {
+  background-color: #f8f9fa;
+  color: #28a745;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.cute-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
 .graph-container {
   position: relative;
   height: 600px; /* 높이 확장 */

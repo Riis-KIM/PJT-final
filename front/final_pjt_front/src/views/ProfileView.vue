@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-5">
-    <div class="card p-4">
-      <h2 class="mb-4">내 정보</h2>
-      
+    <div class="card p-4 cute-card">
+      <h2 class="mb-4 text-green">내 정보</h2>
+
       <div v-if="authStore.user">
         <!-- 프로필 보기 모드 -->
         <div v-if="!isEditing && !showPasswordForm">
@@ -16,35 +16,35 @@
             </div>
           </div>
           <div class="info-row mb-3">
-            <label class="form-label">사용자 이름</label>
+            <label class="form-label text-green">사용자 이름</label>
             <p class="form-control-static">{{ computedUserInfo.username }}</p>
           </div>
 
           <div class="info-row mb-3">
-            <label class="form-label">이름</label>
+            <label class="form-label text-green">이름</label>
             <p class="form-control-static">{{ computedUserInfo.name || '새싹' }}</p>
           </div>
 
           <div class="info-row mb-3">
-            <label class="form-label">이메일</label>
+            <label class="form-label text-green">이메일</label>
             <p class="form-control-static">{{ computedUserInfo.email || '미설정' }}</p>
           </div>
 
           <div class="info-row mb-3">
-            <label class="form-label">나이</label>
+            <label class="form-label text-green">나이</label>
             <p class="form-control-static">{{ computedUserInfo.age || '0' }} 살</p>
           </div>
 
           <div class="info-row mb-3">
-            <label class="form-label">자산</label>
+            <label class="form-label text-green">자산</label>
             <p class="form-control-static">{{ computedUserInfo.money || '0' }} 원</p>
           </div>
 
           <div class="d-grid gap-2">
-            <button class="btn btn-primary mb-3" @click="isEditing = true">
+            <button class="btn btn-green mb-3" @click="isEditing = true">
               정보 수정하기
             </button>
-            <button class="btn btn-secondary" @click="showPasswordForm = true">
+            <button class="btn btn-outline-green" @click="showPasswordForm = true">
               비밀번호 변경
             </button>
           </div>
@@ -53,30 +53,30 @@
         <!-- 정보 수정 모드 -->
         <div v-if="isEditing">
           <div class="mb-3">
-            <label class="form-label">이름</label>
-            <input type="text" class="form-control" v-model="editUserInfo.name" />
+            <label class="form-label text-green">이름</label>
+            <input type="text" class="form-control cute-input" v-model="editUserInfo.name" />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">이메일</label>
-            <input type="email" class="form-control" v-model="editUserInfo.email" />
+            <label class="form-label text-green">이메일</label>
+            <input type="email" class="form-control cute-input" v-model="editUserInfo.email" />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">나이</label>
-            <input type="number" class="form-control" v-model="editUserInfo.age" />
+            <label class="form-label text-green">나이</label>
+            <input type="number" class="form-control cute-input" v-model="editUserInfo.age" />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">자산</label>
-            <input type="number" class="form-control" v-model="editUserInfo.money" />
+            <label class="form-label text-green">자산</label>
+            <input type="number" class="form-control cute-input" v-model="editUserInfo.money" />
           </div>
 
           <div class="d-grid gap-2">
-            <button class="btn btn-success mb-2" @click="saveChanges">
+            <button class="btn btn-green mb-2" @click="saveChanges">
               저장하기
             </button>
-            <button class="btn btn-secondary" @click="cancelEdit">
+            <button class="btn btn-outline-green" @click="cancelEdit">
               취소
             </button>
           </div>
@@ -84,27 +84,26 @@
 
         <!-- 비밀번호 변경 모드 -->
         <div v-if="showPasswordForm">
-
           <div class="mb-3">
-            <label class="form-label">현재 비밀번호</label>
-            <input type="password" class="form-control" v-model="passwordData.old_password" />
+            <label class="form-label text-green">현재 비밀번호</label>
+            <input type="password" class="form-control cute-input" v-model="passwordData.old_password" />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">새 비밀번호</label>
-            <input type="password" class="form-control" v-model="passwordData.new_password1" />
+            <label class="form-label text-green">새 비밀번호</label>
+            <input type="password" class="form-control cute-input" v-model="passwordData.new_password1" />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">새 비밀번호 확인</label>
-            <input type="password" class="form-control" v-model="passwordData.new_password2" />
+            <label class="form-label text-green">새 비밀번호 확인</label>
+            <input type="password" class="form-control cute-input" v-model="passwordData.new_password2" />
           </div>
 
           <div class="d-grid gap-2">
-            <button class="btn btn-success" @click="handlePasswordChange">
+            <button class="btn btn-green" @click="handlePasswordChange">
               변경하기
             </button>
-            <button class="btn btn-secondary" @click="cancelPasswordChange">
+            <button class="btn btn-outline-green" @click="cancelPasswordChange">
               취소
             </button>
           </div>
@@ -191,35 +190,81 @@ const cancelPasswordChange = () => {
 </script>
 
 <style scoped>
-.card {
+/* 전체 카드 스타일 */
+.cute-card {
   max-width: 600px;
   margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  background: #f0fdf0;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.info-row {
-  border-bottom: 1px solid #eee;
-  padding: 8px 0;
+/* 제목 색상 */
+.text-green {
+  color: #38b000;
+  font-weight: bold;
 }
 
-.form-control-static {
-  margin-bottom: 0;
-  padding: 7px 0;
-}
-
+/* 프로필 이미지 스타일 */
 .profile-image-container {
   width: 150px;
   height: 150px;
   margin: 0 auto;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 3px solid #eafbe4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .profile-image {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+/* 입력 필드 스타일 */
+.cute-input {
+  border: 2px solid #38b000;
+  border-radius: 10px;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.cute-input:focus {
+  outline: none;
+  border-color: #76c893;
+  box-shadow: 0 0 5px rgba(56, 176, 0, 0.4);
+}
+
+/* 버튼 스타일 */
+.btn-green {
+  background: #38b000;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  transition: background 0.3s ease;
+}
+
+.btn-green:hover {
+  background: #76c893;
+}
+
+.btn-outline-green {
+  border: 2px solid #38b000;
+  color: #38b000;
+  border-radius: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-green:hover {
+  background: #38b000;
+  color: white;
+}
+
+/* 정보 행 스타일 */
+.info-row {
+  border-bottom: 1px solid #eafbe4;
+  padding: 8px 0;
 }
 </style>

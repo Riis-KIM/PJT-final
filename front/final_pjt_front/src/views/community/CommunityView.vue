@@ -121,7 +121,7 @@ onMounted(() => {
 .page-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #28a745; /* 진한 초록색 제목 */
+  color: black; /* 진한 초록색 제목 */
 }
 
 .btn-create {
