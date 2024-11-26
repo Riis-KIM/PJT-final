@@ -141,6 +141,7 @@ const removeDeposit = async (fin_prdt_cd) => {
       headers: { Authorization: `Token ${token}` },
     });
     console.log("예금 상품 삭제 성공");
+    alert("삭제되었습니다")
 
     // 서버에서 최신 데이터 다시 가져오기
     await fetchCart();
@@ -161,7 +162,7 @@ const removeSaving = async (fin_prdt_cd) => {
       headers: { Authorization: `Token ${token}` },
     });
     console.log("적금 상품 삭제 성공");
-
+    alert("삭제되었습니다")
     // 서버에서 최신 데이터 다시 가져오기
     await fetchCart();
   } catch (error) {
