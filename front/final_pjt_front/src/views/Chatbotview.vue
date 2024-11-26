@@ -1,26 +1,11 @@
 <template>
   <div class="container mt-4">
-    <!-- 안내 모달 -->
-    <div v-if="dialogue" class="modal fade show d-block" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">안내</h5>
-          </div>
-          <div class="modal-body">
-            <p>답변이 혹시 마음에 안드신다면</p>
-            <p>답변에 마우스를 올리면 피드백을 하실 수 있습니다.</p>
-            <p>감사합니다.</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- 채팅 창 -->
     <div class="card shadow-sm">
       <!-- 헤더 -->
       <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-        <button class="btn btn-outline-light btn-sm" @click="getmodal">?</button>
+        <p></p>
         <h5 class="mb-0">{{ title }}</h5>
         <button class="btn btn-outline-light btn-sm" @click="message_list=[]">
           <i class="bi bi-trash"></i>
@@ -43,11 +28,6 @@
                 <span class="visually-hidden">Loading...</span>
               </div>
               <span v-else>{{ message.data }}</span>
-              <button v-if="!message.loadflag" 
-                      class="btn btn-link position-absolute top-0 end-0 p-1 text-secondary"
-                      @click="sendchat(message)">
-                <i class="bi bi-exclamation-circle"></i>
-              </button>
             </div>
           </div>
         </div>
@@ -77,24 +57,10 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const dialogue = ref(false)
-const hideflag = ref(true)
 const title = ref('Seedly Assistant')
-const button_title = ref('Chat')
 const my_message = ref('')
 const message_list = ref([])
 const chat = ref(null)
-
-const getmodal = () => {
-  dialogue.value = true
-  setTimeout(() => {
-    dialogue.value = false
-  }, 2000)
-}
-
-const sendchat = (message) => {
-  console.log('피드백:', message)
-}
 
 const getChatData = async () => {
   if (!my_message.value) return

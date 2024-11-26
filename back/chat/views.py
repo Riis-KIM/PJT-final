@@ -7,7 +7,8 @@ import openai
 @api_view(['POST'])
 def chat_with_gpt(request):
     try:
-        client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+        # openai.api_key = settings.OPENAI_API_KEY
+        client = openai.Client(api_key=settings.OPENAI_API_KEY)
         system_message = {
                 "role": "system",
                 "content": """당신은 금융 상품 추천 전문가입니다. 다음의 인기 예금/적금 상품 정보를 기반으로 상담해주세요:
@@ -74,8 +75,9 @@ def chat_with_gpt(request):
 
         user_message = request.data.get('message', '')
         
+        # response = openai.ChatCompletion.create(
         response = client.chat.completions.create(
-            model="gpt4o-mini",
+            model="gpt-4o-mini",
             messages=[
                 system_message,
                 {
@@ -118,6 +120,6 @@ def chat_with_gpt(request):
         return Response({
             'message': response.choices[0].message.content
         })
-    except Exception as e:
-        print(f"OpenAI API 오류: {str(e)}")
+    except openai.BadRequestError as e:
+        print(f"Bad request 오류: {str(e)}")
         return Response({'error': str(e)}, status=500)
