@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e!e(kjses93d!q8x@(o*f*g_lun(d2q394cba)@*_g*#du5&-4'
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -189,19 +191,19 @@ REST_AUTH_SERIALIZERS = {
 ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 
 # 금융감독원 API 키 설정
-FIN_KEY = 'c623c1eba8c43059b3039604c3c0c5ee'
+FIN_KEY = os.environ.get('FIN_KEY')
 
 # 환율정보 API 키 설정
-EXC_KEY = '49jaBC90qCAZhLcYuPHVxY4IioI2V98s'
+EXC_KEY = os.environ.get('EXC_KEY')
 
 # openAI API 키 설정
-OPENAI_API_KEY = ''
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 # 비밀번호 초기화용
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #콘솔창에 출력
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 메일로 전송
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gunil099@gmail.com'
-EMAIL_HOST_PASSWORD = 'xfhlsqjwrrspxgbq'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
