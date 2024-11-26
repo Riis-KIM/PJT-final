@@ -130,14 +130,14 @@ const fetchCart = async () => {
 };
 
 
-const removeDeposit = async (finPrdtCd) => {
+const removeDeposit = async (fin_prdt_cd) => {
   const isConfirmed = window.confirm("정말 이 예금 상품을 삭제하시겠습니까?");
   if (!isConfirmed) return;
 
   try {
     const token = localStorage.getItem("token");
     // 서버에 삭제 요청
-    await axios.delete(`/accounts/custom/myproducts/${finPrdtCd}/`, {
+    await axios.post(`/api/v1/deposits/${fin_prdt_cd}/join/`, {}, {
       headers: { Authorization: `Token ${token}` },
     });
     console.log("예금 상품 삭제 성공");
@@ -150,14 +150,14 @@ const removeDeposit = async (finPrdtCd) => {
   }
 };
 
-const removeSaving = async (finPrdtCd) => {
+const removeSaving = async (fin_prdt_cd) => {
   const isConfirmed = window.confirm("정말 이 적금 상품을 삭제하시겠습니까?");
   if (!isConfirmed) return;
 
   try {
     const token = localStorage.getItem("token");
     // 서버에 삭제 요청
-    await axios.delete(`/accounts/custom/myproducts/${finPrdtCd}/`, {
+    await axios.post(`/api/v1/savings/${fin_prdt_cd}/join/`, {},{
       headers: { Authorization: `Token ${token}` },
     });
     console.log("적금 상품 삭제 성공");
