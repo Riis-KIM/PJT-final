@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h1 class="fw-bold mb-4">구매 목록</h1>
+    <h1 class="fw-bold mb-4">가입 목록</h1>
 
     <!-- 보기 모드 버튼 -->
     <div class="d-flex justify-content-end mb-4 view-mode-buttons">
