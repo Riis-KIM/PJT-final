@@ -99,7 +99,7 @@
 
 <script setup>
 import { onMounted, ref, computed } from "vue";
-
+const kakaoAPIkey = import.meta.env.VITE_KAKAO_API_KEY
 const map = ref(null);
 const bankMarkers = ref([]);
 const provinces = ref([
@@ -169,7 +169,7 @@ const loadKakaoMap = () => {
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.src =
-      "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=80d830a065cca6f44b1812e2f0679579&libraries=services";
+      `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${kakaoAPIkey}&libraries=services`;
 
     script.addEventListener("load", () => {
       kakao.maps.load(() => {

@@ -16,47 +16,35 @@
       </div>
     </div>
 
-    <!-- 채팅 토글 버튼 -->
-    <div v-show="!hideflag" class="position-fixed bottom-0 end-0 m-3">
-      <button class="btn btn-primary rounded-circle p-3" @click="hideflag = !hideflag">
-        {{ button_title }}
-      </button>
-    </div>
-
     <!-- 채팅 창 -->
-    <div v-show="hideflag" class="card shadow" style="max-width: 500px; margin: 0 auto;">
+    <div class="card shadow-sm">
       <!-- 헤더 -->
-      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
         <button class="btn btn-outline-light btn-sm" @click="getmodal">?</button>
         <h5 class="mb-0">{{ title }}</h5>
-        <div>
-          <button class="btn btn-outline-light btn-sm me-2" @click="message_list=[]">
-            <i class="bi bi-trash"></i>
-          </button>
-          <button class="btn btn-outline-light btn-sm" @click="hideflag = !hideflag">
-            <i class="bi bi-x-lg"></i>
-          </button>
-        </div>
+        <button class="btn btn-outline-light btn-sm" @click="message_list=[]">
+          <i class="bi bi-trash"></i>
+        </button>
       </div>
 
       <!-- 채팅 내용 -->
-      <div class="card-body chat-container" style="height: 400px; overflow-y: auto;">
+      <div class="card-body chat-container bg-light" style="height: 500px; overflow-y: auto;">
         <div v-for="(message, idx) in message_list" :key="idx" class="mb-3">
           <!-- 사용자 메시지 -->
           <div v-if="message.type==='user'" class="d-flex justify-content-end">
-            <div class="bg-primary text-white rounded p-2 max-w-75">
+            <div class="bg-secondary text-white rounded p-2 max-w-75">
               {{ message.data }}
             </div>
           </div>
           <!-- 어시스턴트 메시지 -->
           <div v-else class="d-flex justify-content-start">
-            <div class="bg-light rounded p-2 max-w-75 position-relative">
+            <div class="bg-white rounded p-2 max-w-75 position-relative shadow-sm">
               <div v-if="message.loadflag" class="spinner-border spinner-border-sm" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
               <span v-else>{{ message.data }}</span>
               <button v-if="!message.loadflag" 
-                      class="btn btn-link position-absolute top-0 end-0 p-1"
+                      class="btn btn-link position-absolute top-0 end-0 p-1 text-secondary"
                       @click="sendchat(message)">
                 <i class="bi bi-exclamation-circle"></i>
               </button>
@@ -66,17 +54,17 @@
       </div>
 
       <!-- 입력창 -->
-      <div class="card-footer">
+      <div class="card-footer bg-light border-top">
         <div class="input-group">
           <input
             type="text"
             ref="chat"
-            class="form-control"
+            class="form-control border-secondary"
             v-model="my_message"
             @keyup.enter="getChatData"
             placeholder="메시지를 입력하세요..."
           />
-          <button class="btn btn-primary" @click="getChatData">
+          <button class="btn btn-secondary" @click="getChatData">
             전송
           </button>
         </div>
@@ -167,5 +155,13 @@ onMounted(() => {
 
 .modal {
   background-color: rgba(0,0,0,0.5);
+}
+
+.card {
+  border-color: #dee2e6;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
 }
 </style>
